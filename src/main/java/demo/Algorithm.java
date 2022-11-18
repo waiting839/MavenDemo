@@ -2909,9 +2909,55 @@ public class Algorithm {
         }
     }
 
+    /**
+     * 给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+     * 字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+     * 输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+     * 输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        for(String str : strs){
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            if(map.containsKey(new String(chars))){
+                map.get(new String(chars)).add(str);
+            }else {
+                List<String> tmp = new ArrayList<>();
+                tmp.add(str);
+                map.put(new String(chars), tmp);
+            }
+        }
+        map.entrySet().forEach(e -> {
+            res.add(e.getValue());
+        });
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * 子数组 是数组中的一个连续部分。
+     * 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+     * 输出：6
+     * 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+     * @param nums
+     * @return
+     */
+    public int maxSubArray2(int[] nums) {
+        int max = nums[0];
+        for(int i = 1; i < nums.length; i++){
+            nums[i] += Math.max(nums[i - 1], 0);
+            max = Math.max(max, nums[i]);
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
-        System.out.println(algorithm.combinationSum(new int[]{2,3,6,7}, 7));
+        System.out.println(algorithm.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
     }
 }
