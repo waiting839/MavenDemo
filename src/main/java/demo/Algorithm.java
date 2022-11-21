@@ -2955,6 +2955,62 @@ public class Algorithm {
         return max;
     }
 
+    /**
+     * 给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+     * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 判断你是否能够到达最后一个下标。
+     * 输入：nums = [2,3,1,1,4]
+     * 输出：true
+     * 解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        int size = nums.length;
+        //获取当前下标能达到的最大位置
+        int rightMax = 0;
+        for(int i = 0; i < size; i++){
+            //判断是否能到达下一个位置，如果i > rightMax即是前面的最大位置达不到当前i的位置
+            if(i <= rightMax){
+                rightMax = Math.max(rightMax, i + nums[i]);
+                //如果能直接跳跃到最大长度则直接返回true
+                if(rightMax >= size - 1){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。
+     * 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+     * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+     * 输出：[[1,6],[8,10],[15,18]]
+     * 解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+     * @param intervals
+     */
+    public int[][] merge(int[][] intervals) {
+        if(intervals == null || intervals.length == 0){
+            return new int[0][0];
+        }
+        //根据
+        // 左区间排序
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> list = new ArrayList<>();
+        for(int i = 0; i < intervals.length; i++){
+            int left = intervals[i][0], right = intervals[i][1];
+            if(list.isEmpty() || list.get(list.size() - 1)[1] < left){
+                //list为空或者下一个的左区间大于上一个的右区间，直接插入
+                list.add(new int[]{left, right});
+            }else {
+                //对比右区间取最大值
+                list.get(list.size() - 1)[1] = Math.max(list.get(list.size() - 1)[1], right);
+            }
+        }
+        return list.toArray(new int[list.size()][]);
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
