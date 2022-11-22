@@ -2994,8 +2994,7 @@ public class Algorithm {
         if(intervals == null || intervals.length == 0){
             return new int[0][0];
         }
-        //根据
-        // 左区间排序
+        //根据左区间排序
         Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
         List<int[]> list = new ArrayList<>();
         for(int i = 0; i < intervals.length; i++){
@@ -3036,6 +3035,53 @@ public class Algorithm {
             }
         }
         return tmp[m - 1][n - 1];
+    }
+
+    /**
+     * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+     * 说明：每次只能向下或者向右移动一步。
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        for(int i = 1; i < m; i++){
+            grid[i][0] += grid[i - 1][0];
+        }
+        for(int i = 1; i < n; i++){
+            grid[0][i] += grid[0][i - 1];
+        }
+        for(int i = 1; i < m; i++){
+            for(int j = 1; j < n; j++){
+                grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+
+    /**
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if(n == 1){
+            return 1;
+        }
+        if(n == 2){
+            return 2;
+        }
+        int cur = 2;
+        int pre = 1;
+        while (n > 2){
+            int tmp = cur;
+            cur = cur + pre;
+            pre = tmp;
+            n--;
+        }
+        return cur;
     }
 
     public static void main(String[] args) {
