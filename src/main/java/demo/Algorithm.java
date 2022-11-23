@@ -3084,6 +3084,47 @@ public class Algorithm {
         return cur;
     }
 
+    /**
+     * 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+     * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+     * 必须在不使用库的sort函数的情况下解决这个问题。
+     * 输入：nums = [2,0,2,1,1,0]
+     * 输出：[0,0,1,1,2,2]
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        sortColors_help(nums, 0, nums.length - 1);
+    }
+
+    private void sortColors_help(int[] nums, int l, int r){
+        if(l >= r){
+            return;
+        }
+        int index = sortColors_help_quick(nums, l, r);
+        sortColors_help(nums, l, index - 1);
+        sortColors_help(nums, index + 1, r);
+    }
+
+    private int sortColors_help_quick(int[] nums, int l, int r){
+        int k = nums[l];
+        int i = l;
+        int j = r;
+        while (i < j){
+            while (i < j && k < nums[j]){
+                j--;
+            }
+            while (i < j && k >= nums[i]){
+                i++;
+            }
+            if(i < j){
+                swap(nums, i, j);
+            }
+        }
+        nums[l] = nums[j];
+        nums[j] = k;
+        return j;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
