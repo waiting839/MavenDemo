@@ -3125,6 +3125,70 @@ public class Algorithm {
         return j;
     }
 
+    /**
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     * 输入：nums = [1,2,3]
+     * 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> tmp = new ArrayList<>();
+        subsets_help(nums, res, tmp, 0);
+        return res;
+    }
+
+    private void subsets_help(int[] nums, List<List<Integer>> res, List<Integer> tmp, int start){
+        res.add(new ArrayList<>(tmp));
+        if(start == nums.length){
+            return;
+        }
+        for(int i = start; i < nums.length; i++){
+            tmp.add(nums[i]);
+            subsets_help(nums, res, tmp, i + 1);
+            tmp.remove(tmp.size() - 1);
+        }
+    }
+
+    /**
+     * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist1(char[][] board, String word) {
+        int m = board.length;
+        int n = board[0].length;
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(exist_help_best(board, word, i, j, 0)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean exist_help_best(char[][] board, String word, int i, int j, int k){
+        if(i < 0 || i > board.length - 1 || j < 0 || j > board[0].length - 1 || board[i][j] != word.charAt(k)){
+            return false;
+        }
+        if(k == word.length() - 1){
+            return true;
+        }
+        char tmp = board[i][j];
+        board[i][j] = '/';
+        boolean res = exist_help_best(board, word, i + 1, j, k + 1)
+                || exist_help_best(board, word, i - 1, j, k + 1)
+                || exist_help_best(board, word, i, j + 1, k + 1)
+                || exist_help_best(board, word, i, j - 1, k + 1);
+        board[i][j] = tmp;
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
