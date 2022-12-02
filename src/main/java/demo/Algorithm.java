@@ -3189,9 +3189,50 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1 。
+     * 求在该柱状图中，能够勾勒出来的矩形的最大面积。
+     * [2,1,5,6,2,3] [-1,-1,1,2,1,4] [1,6,4,4,6,6]
+     * 10
+     * @param heights
+     * @return
+     */
+    public int largestRectangleArea(int[] heights) {
+        int res = 0;
+        //单调栈
+        Stack<Integer> stack = new Stack<>();
+        int n = heights.length;
+        //找出左边比当前下标小的最近的下标
+        int[] left = new int[n];
+        //找出右边比当前下标小的最近下标
+        int[] right = new int[n];
+        for(int i = 0; i < n; i++){
+            //等号也弹出
+            while (!stack.isEmpty() && heights[i] <= heights[stack.peek()]){
+                stack.pop();
+            }
+            //如果单调栈空了则存边界外的值
+            left[i] = stack.isEmpty() ? -1 : stack.peek();
+            stack.push(i);
+        }
+        stack.clear();
+        for(int i = n - 1; i >= 0; i--){
+            while (!stack.isEmpty() && heights[i] <= heights[stack.peek()]){
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? n : stack.peek();
+            stack.push(i);
+        }
+        for(int i = 0; i < n; i++){
+            //记得减一
+            res = Math.max(res, (right[i] - left[i] - 1) * heights[i]);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
-        System.out.println(algorithm.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
+        System.out.println(algorithm.largestRectangleArea(new int[]{2,1,5,6,2,3}));
     }
 }
