@@ -577,28 +577,30 @@ public class Demo {
 //            }, ThreadPoolBuilder.getRightThreadPool())).toArray(CompletableFuture[]::new);
 //            CompletableFuture.allOf(completableFutures).join();
 //        });
-        ConcurrentLinkedQueue<Throwable> errorQueue = new ConcurrentLinkedQueue<>();
-        CompletableFuture<String> task2 = CompletableFuture.supplyAsync(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(Thread.currentThread().getName());
-            String str = null;
-            str.split(",");
-            return "studentTest";
-        }, ThreadPoolBuilder.getRightThreadPool()).exceptionally(throwable -> {
-            errorQueue.add(throwable);
-            return null;
-        }).whenComplete((s, throwable) -> {
-            ThreadPoolBuilder.getRightThreadPool().shutdown();
-        });
-        String jid = task2.get();
-        if(errorQueue.size() != 0){
-            throw errorQueue.poll();
-        }
+//        ConcurrentLinkedQueue<Throwable> errorQueue = new ConcurrentLinkedQueue<>();
+//        CompletableFuture<String> task2 = CompletableFuture.supplyAsync(() -> {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println(Thread.currentThread().getName());
+//            String str = null;
+//            str.split(",");
+//            return "studentTest";
+//        }, ThreadPoolBuilder.getRightThreadPool()).exceptionally(throwable -> {
+//            errorQueue.add(throwable);
+//            return null;
+//        }).whenComplete((s, throwable) -> {
+//            ThreadPoolBuilder.getRightThreadPool().shutdown();
+//        });
+//        String jid = task2.get();
+//        if(errorQueue.size() != 0){
+//            throw errorQueue.poll();
+//        }
 
         //测试提交
+
+        System.out.println((1 << 2) | (1 << 1));
     }
 }

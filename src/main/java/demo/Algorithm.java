@@ -3230,6 +3230,50 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。
+     * @param matrix
+     * @return
+     */
+    public int maximalRectangle(char[][] matrix) {
+        int res = 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] left = new int[m][n];
+        for (int i = 0; i < m; i++){
+            for (int j = 0; j < n; j++){
+                if (matrix[i][j] == '1') {
+                    left[i][j] = (j == 0 ? 0 : left[i][j - 1]) + 1;
+                }
+            }
+        }
+        //基于每一列进行柱状图求最大面积
+        for (int j = 0; j < n; j++){
+            int[] up = new int[m];
+            int[] down = new int[m];
+            Stack<Integer> stack = new Stack<>();
+            for (int i = 0; i < m; i++){
+                while (!stack.isEmpty() && left[stack.peek()][j] >= left[i][j]){
+                    stack.pop();
+                }
+                up[i] = stack.isEmpty() ? -1 : stack.peek();
+                stack.push(i);
+            }
+            stack.clear();
+            for (int i = m - 1; i >= 0; i--){
+                while (!stack.isEmpty() && left[stack.peek()][j] >= left[i][j]){
+                    stack.pop();
+                }
+                down[i] = stack.isEmpty() ? m : stack.peek();
+                stack.push(i);
+            }
+            for (int i = 0; i < m; i++){
+                res = Math.max(res, (down[i] - up[i] - 1) * left[i][j]);
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
