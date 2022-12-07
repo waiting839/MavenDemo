@@ -3274,6 +3274,45 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定一个二叉树的根节点 root ，返回 它的 中序 遍历
+     * @param root
+     * @return
+     */
+    List<Integer> inorderTraversal_res = new ArrayList<>();
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if(root == null){
+            return new ArrayList<>();
+        }
+        inorderTraversal(root.left);
+        inorderTraversal_res.add(root.val);
+        inorderTraversal(root.right);
+        return inorderTraversal_res;
+    }
+
+    /**
+     * 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？
+     * 返回满足题意的二叉搜索树的种数。
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++){
+            for (int j = 1; j <= i; j++){
+                //假设除了根节点左边的，就有i-j个节点
+                int left = dp[i - j];
+                //假设除了根节点右边的，就有j-1个节点
+                int right = dp[j - 1];
+                //两边相乘再相加就是当前节点数的个数
+                dp[i] += left * right;
+            }
+        }
+        return dp[n];
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
