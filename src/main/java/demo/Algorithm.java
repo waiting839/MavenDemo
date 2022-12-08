@@ -3313,6 +3313,66 @@ public class Algorithm {
         return dp[n];
     }
 
+    /**
+     * 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+     * 有效 二叉搜索树定义如下：
+     * 节点的左子树只包含 小于 当前节点的数。
+     * 节点的右子树只包含 大于 当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     * @param root
+     * @return
+     */
+    List<Integer> isValidBST_res = new ArrayList<>();
+    public boolean isValidBST(TreeNode root) {
+        isValidBST_help(root);
+        for(int i = 1; i < isValidBST_res.size(); i++){
+            if(isValidBST_res.get(i) <= isValidBST_res.get(i - 1)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Integer> isValidBST_help(TreeNode root){
+        if(root == null){
+            return new ArrayList<>();
+        }
+        isValidBST_help(root.left);
+        isValidBST_res.add(root.val);
+        isValidBST_help(root.right);
+        return isValidBST_res;
+    }
+
+    /**
+     * 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder1(TreeNode root) {
+        if (root == null){
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> res = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            int sum = queue.size();
+            List<Integer> tmp = new ArrayList<>();
+            for(int i = 0; i < sum; i++){
+                TreeNode node = queue.poll();
+                tmp.add(node.val);
+                if(node.left != null){
+                    queue.add(node.left);
+                }
+                if(node.right != null){
+                    queue.add(node.right);
+                }
+            }
+            res.add(tmp);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] pushed = new int[]{1,2,3,3};
