@@ -3,7 +3,6 @@ package demo;
 import com.google.common.collect.Lists;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author 作者 吴嘉烺
@@ -3373,9 +3372,86 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定一个二叉树，找出其最大深度。
+     * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+     * 说明: 叶子节点是指没有子节点的节点。
+     * @param root
+     * @return
+     */
+    public int maxDepth1(TreeNode root) {
+        if(root == null){
+             return 0;
+        }
+        return Math.max(maxDepth1(root.left), maxDepth1(root.right)) + 1;
+    }
+
+    /**
+     * 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+     * 输入: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+     * 输出: [3,9,20,null,null,15,7]
+     * @param preorder
+     * @param inorder
+     * @return
+     */
+    public TreeNode buildTree1(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for(int i = 0; i < inorder.length; i++){
+            inorderMap.put(inorder[i], i);
+        }
+        TreeNode res = buildTree_help1(preorder, inorderMap, 0, 0, preorder.length - 1);
+        return res;
+    }
+
+    private TreeNode buildTree_help1(int[] preorder, Map<Integer, Integer> inorderMap, int root, int left, int right){
+        if(left > right){
+            return null;
+        }
+        TreeNode node = new TreeNode(preorder[root]);
+        int i = inorderMap.get(preorder[root]);
+        node.left = buildTree_help1(preorder, inorderMap, root + 1, left, i - 1);
+        node.right = buildTree_help1(preorder, inorderMap, root + i - left + 1, i + 1, right);
+        return node;
+    }
+
+    /**
+     * 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+     * 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+     * 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        List<TreeNode> list = new ArrayList<>();
+        flatten_help(root, list);
+        int size = list.size();
+        for(int i = 1; i < size; i++){
+            TreeNode pre = list.get(i - 1);
+            TreeNode cur = list.get(i);
+            pre.left = null;
+            pre.right = cur;
+        }
+        System.out.println();
+    }
+
+    private void flatten_help(TreeNode root, List<TreeNode> list){
+        if(root == null){
+            return;
+        }
+        list.add(root);
+        flatten_help(root.left, list);
+        flatten_help(root.right, list);
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        int[] pushed = new int[]{1,2,3,3};
-        System.out.println(algorithm.largestRectangleArea(new int[]{2,1,5,6,2,3}));
+        TreeNode node = new TreeNode(1);
+        node.left = new TreeNode(2);
+        node.right = new TreeNode(5);
+        node.left.left = new TreeNode(3);
+        node.left.right = new TreeNode(4);
+        node.right.right = new TreeNode(6);
+        List<TreeNode> list = new ArrayList<>();
+        algorithm.flatten(node);
+        list.size();
     }
 }
