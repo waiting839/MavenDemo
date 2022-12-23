@@ -601,6 +601,20 @@ public class Demo {
 
         //测试提交
 
-        System.out.println((1 << 2) | (1 << 1));
+//        System.out.println((1 << 2) | (1 << 1));
+//
+//        AtomicInteger atomicInteger = new AtomicInteger(0);
+//        int j = atomicInteger.addAndGet(1);
+//        System.out.println(j);
+//
+//        String sss = "4";
+//        int bitNum = 0;
+//        for(String str : sss.split(",")){
+//            bitNum = bitNum | Integer.parseInt(str);
+//        }
+//        System.out.println(bitNum);
+
+        ProcStateEnum procStateEnum = ProcStateEnum.valuesOf("在办");
+        System.out.println(procStateEnum.getValue());
     }
 }
