@@ -614,7 +614,16 @@ public class Demo {
 //        }
 //        System.out.println(bitNum);
 
-        ProcStateEnum procStateEnum = ProcStateEnum.valuesOf("在办");
-        System.out.println(procStateEnum.getValue());
+//        ProcStateEnum procStateEnum = ProcStateEnum.valuesOf("在办");
+//        System.out.println(procStateEnum.getValue());
+//
+//        String s = "OR ss";
+//        System.out.println(s.substring(2));
+//
+//        System.out.println(Integer.toBinaryString(4));
+//        System.out.println(Integer.toBinaryString(4).lastIndexOf("0"));
+//        System.out.println("10000".length() - "10010".lastIndexOf("1"));
+//        Integer.toBinaryString(4).lastIndexOf("1");
+
     }
 }
