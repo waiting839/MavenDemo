@@ -625,5 +625,8 @@ public class Demo {
 //        System.out.println("10000".length() - "10010".lastIndexOf("1"));
 //        Integer.toBinaryString(4).lastIndexOf("1");
 
+        String s = "leetcode";
+        System.out.println(s.indexOf("leet"));
+        System.out.println(s.substring(8).isEmpty());
     }
 }
