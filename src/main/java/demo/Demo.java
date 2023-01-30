@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import lombok.Data;
 
@@ -625,6 +626,7 @@ public class Demo {
 //        System.out.println("10000".length() - "10010".lastIndexOf("1"));
 //        Integer.toBinaryString(4).lastIndexOf("1");
 
+        List<String> stringList = ImmutableList.of("1","2");
         String s = "leetcode";
         System.out.println(s.indexOf("leet"));
         System.out.println(s.substring(8).isEmpty());

@@ -3574,26 +3574,106 @@ public class Algorithm {
         return dp[dp.length - 1];
     }
 
-
     /**
-     * 请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
-     * 实现 LRUCache 类：
-     * LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
-     * int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
-     * void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。
-     * 如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字。
-     * 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行。
-     * @param key
+     * 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+     * @param head
      * @return
      */
-    Map<Integer, Integer> LRUMap = new HashMap<>();
-    List<Integer> LRUList = new LinkedList<>();
-    public int get(int key) {
-        return 0;
+    public ListNode sortList(ListNode head) {
+        return sortList(head, null);
     }
 
-    public void put(int key, int value) {
+    private ListNode sortList(ListNode head, ListNode tail) {
+        //只有一个时直接返回
+        if (head == null) {
+            return head;
+        }
+        //只有两个node，取第一个，head.next = null是为了让head1不带上head2的头部
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+        //快慢指针获取中间节点
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast != tail) {
+                fast = fast.next;
+            }
+        }
+        ListNode mid = slow;
+        ListNode head1 = sortList(head, mid);
+        ListNode head2 = sortList(mid, tail);
+        //有序链表的合并
+        ListNode sort = mergeList(head1, head2);
+        return sort;
+    }
 
+    private ListNode mergeList(ListNode head1, ListNode head2) {
+        ListNode head = new ListNode();
+        ListNode tmp = head;
+        while (head1 != null && head2 != null) {
+            if (head1.val > head2.val) {
+                tmp.next = head2;
+                head2 = head2.next;
+            } else {
+                tmp.next = head1;
+                head1 = head1.next;
+            }
+            tmp = tmp.next;
+        }
+        if (head1 != null) {
+            tmp.next = head1;
+        }
+        if (head2 != null) {
+            tmp.next = head2;
+        }
+        return head.next;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），
+     * 并返回该子数组所对应的乘积。
+     * 测试用例的答案是一个 32-位 整数。
+     * 子数组 是数组的连续子序列。
+     * 输入: nums = [2,3,-2,4]
+     * 输出: 6
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int res = nums[0];
+        //因为负负得正的原因，需要维护两个动态规划数组，一个是前面最大的，一个是前面最小的
+        int minF = nums[0];
+        int maxF = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int mn = minF;
+            int mx = maxF;
+            minF = Math.min(nums[i], Math.min(mn * nums[i], mx * nums[i]));
+            maxF = Math.max(nums[i], Math.max(mn * nums[i], mx * nums[i]));
+            res = Math.max(res, maxF);
+        }
+        return res;
+    }
+
+    /**
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
+     * 如果两个链表不存在相交节点，返回 null 。
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNodeBest(ListNode headA, ListNode headB) {
+        //遍历A、B链表，没有相交节点会一起指向null，有相交节点会一起指向相交节点，因为总长度是一样的（A+B的长度）
+        ListNode A = headA;
+        ListNode B = headB;
+        while (A != B) {
+            A = A != null ? A.next : headB;
+            B = B != null ? B.next : headA;
+        }
+        return A;
     }
 
     public static void main(String[] args) {
