@@ -3676,16 +3676,65 @@ public class Algorithm {
         return A;
     }
 
+    /**
+     * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，
+     * 影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+     * 输入：[1,2,3,1]
+     * 输出：4
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        int[] dp = new int[nums.length];
+        int res = nums[0];
+        dp[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (i == 1) {
+                dp[i] = nums[i];
+            } else if (i == 2) {
+                dp[i] = nums[i] + dp[i - 2];
+            } else {
+                dp[i] = Math.max((nums[i] + dp[i - 2]), (nums[i] + dp[i - 3]));
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
+     * 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+     * 此外，你可以假设该网格的四条边均被水包围。
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    numIslands_help(grid, i, j);
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    private void numIslands_help(char[][] grid, int row, int col) {
+        if (row >= grid.length || row < 0 || col >= grid[0].length || col < 0 || grid[row][col] != '1') {
+            return;
+        }
+        grid[row][col] = '0';
+        numIslands_help(grid, row - 1, col);
+        numIslands_help(grid, row + 1, col);
+        numIslands_help(grid, row, col - 1);
+        numIslands_help(grid, row, col + 1);
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        TreeNode node = new TreeNode(1);
-        node.left = new TreeNode(2);
-        node.right = new TreeNode(5);
-        node.left.left = new TreeNode(3);
-        node.left.right = new TreeNode(4);
-        node.right.right = new TreeNode(6);
-        List<TreeNode> list = new ArrayList<>();
-        algorithm.flatten(node);
-        list.size();
+        algorithm.rob(new int[]{1, 2, 3, 1});
     }
 }
