@@ -3733,6 +3733,73 @@ public class Algorithm {
         numIslands_help(grid, row, col + 1);
     }
 
+    /**
+     * 你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1 。
+     * 在选修某些课程之前需要一些先修课程。 先修课程按数组 prerequisites 给出，其中 prerequisites[i] = [ai, bi]，
+     * 表示如果要学习课程 ai 则 必须 先学习课程  bi 。
+     * 例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
+     * 请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。
+     * [[1,0],[1,2],[0,1]]
+     * @param numCourses
+     * @param prerequisites
+     * @return
+     */
+    boolean canFinishValid = true;
+    Map<Integer, List<Integer>> canFinishMap = new HashMap<>();
+    int[] canFinishVisit;
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        for (int i = 0; i < prerequisites.length; i++) {
+            List<Integer> list;
+            if (canFinishMap.containsKey(prerequisites[i][0])) {
+                list = canFinishMap.get(prerequisites[i][0]);
+            } else {
+                list = new ArrayList<>();
+            }
+            list.add(prerequisites[i][1]);
+            canFinishMap.put(prerequisites[i][0], list);
+        }
+        canFinishVisit = new int[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            canFinish_help(i);
+        }
+        return canFinishValid;
+    }
+
+    private void canFinish_help(int i) {
+        //0是未搜索，1是搜索中，2是已完成。如果都是1搜索中证明存在互斥的情况
+        canFinishVisit[i] = 1;
+        List<Integer> list = canFinishMap.getOrDefault(i, new ArrayList<>());
+        for (int course : list) {
+            if (canFinishVisit[course] == 0) {
+                canFinish_help(course);
+                if (!canFinishValid) {
+                    return;
+                }
+            }
+            if (canFinishVisit[course] == 1) {
+                canFinishValid = false;
+            }
+        }
+        canFinishVisit[i] = 2;
+    }
+
+    /**
+     * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         algorithm.rob(new int[]{1, 2, 3, 1});

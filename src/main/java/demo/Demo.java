@@ -2,6 +2,11 @@ package demo;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -626,9 +631,17 @@ public class Demo {
 //        System.out.println("10000".length() - "10010".lastIndexOf("1"));
 //        Integer.toBinaryString(4).lastIndexOf("1");
 
-        List<String> stringList = ImmutableList.of("1","2");
-        String s = "leetcode";
-        System.out.println(s.indexOf("leet"));
-        System.out.println(s.substring(8).isEmpty());
+//        List<String> stringList = ImmutableList.of("1","2");
+//        String s = "leetcode";
+//        System.out.println(s.indexOf("leet"));
+//        System.out.println(s.substring(8).isEmpty());
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+        Date date = new Date();
+        Instant inst = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = inst.atZone(zoneId);
+        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+        System.out.println(dateTimeFormatter.format(localDateTime));
     }
 }
