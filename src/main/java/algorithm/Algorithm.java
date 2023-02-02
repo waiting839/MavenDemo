@@ -3800,8 +3800,53 @@ public class Algorithm {
         return root;
     }
 
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     * 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     * @param nums
+     * @param k
+     * @return
+     */
+    Random random = new Random();
+    public int findKthLargest(int[] nums, int k) {
+        int target = nums.length - k;
+        int left = 0;
+        int right = nums.length - 1;
+        while (true) {
+            int index = findKthLargest_help(nums, left , right);
+            if (index == target) {
+                return nums[index];
+            } else if (index > target) {
+                right = index - 1;
+            } else if (index < target) {
+                left = index + 1;
+            }
+        }
+    }
+
+    private int findKthLargest_help(int[] nums, int left, int right) {
+        int randomNum = random.nextInt(right - left + 1) + left;
+        swap(nums, left, randomNum);
+        int i = left;
+        int j = right;
+        int tmp = nums[left];
+        while (i < j) {
+            while (i < j && nums[j] >= tmp) {
+                j--;
+            }
+            while (i < j && nums[i] <= tmp) {
+                i++;
+            }
+            swap(nums, i, j);
+        }
+        swap(nums, left, j);
+        return j;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        algorithm.rob(new int[]{1, 2, 3, 1});
+        int[] arr = new int[]{3,2,1,5,6,4};
+        System.out.println(algorithm.findKthLargest(arr, 2));
     }
 }
