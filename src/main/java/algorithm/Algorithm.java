@@ -3844,6 +3844,83 @@ public class Algorithm {
         return j;
     }
 
+    /**
+     * 在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        int res = 0;
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] dp = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] != '1') {
+                    continue;
+                }
+                if (i - 1 >= 0 && j - 1 >= 0) {
+                    dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                } else {
+                    dp[i][j] = 1;
+                }
+                res = Math.max(res, dp[i][j]);
+            }
+        }
+        return res * res;
+    }
+
+    /**
+     * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        Stack<Integer> stack = new Stack<>();
+        ListNode node = head;
+        while (node != null) {
+            stack.push(node.val);
+            node = node.next;
+        }
+        node = head;
+        while (node != null) {
+            if (stack.pop() != node.val) {
+                return false;
+            }
+            node = node.next;
+        }
+        return true;
+    }
+
+    /**
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，
+     * 满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor3(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        //四种情况
+        //1. left 和 right都为空的情况下说明p、q都不在该root下
+        //2. left 和 right都不为空的情况下说明p、q分别位于该root的左右子树
+        //3. left为空，right不为空的情况下说明p、q在right中
+        //4. 同理
+        TreeNode left = lowestCommonAncestor3(root.left, p, q);
+        TreeNode right = lowestCommonAncestor3(root.right, p, q);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] arr = new int[]{3,2,1,5,6,4};
