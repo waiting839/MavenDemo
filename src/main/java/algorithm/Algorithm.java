@@ -3921,6 +3921,75 @@ public class Algorithm {
         return root;
     }
 
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     * 原数组：       [1       2       3       4]
+     * 左部分的乘积：   1       1      1*2    1*2*3
+     * 右部分的乘积： 2*3*4    3*4      4      1
+     * 结果：        1*2*3*4  1*3*4   1*2*4  1*2*3*1
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int[] res = new int[nums.length];
+        int p = 1;
+        int q = 1;
+        for (int i = 0; i < nums.length; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            res[i] *= q;
+            q *= nums[i];
+        }
+        return res;
+    }
+
+    /**
+     * 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+     * 每行的元素从左到右升序排列。
+     * 每列的元素从上到下升序排列。
+     * 从左下角开始，大于就列增加，小于就行减少
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int row = matrix.length - 1;
+        int col = 0;
+        while (row >= 0 && col < matrix[0].length) {
+            if (matrix[row][col] == target) {
+                return true;
+            } else if (matrix[row][col] > target) {
+                row--;
+            } else if (matrix[row][col] < target) {
+                col++;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。
+     * 例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; j++) {
+                min = Math.min(min, dp[i - j * j]);
+            }
+            dp[i] = min + 1;
+        }
+        return dp[n];
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] arr = new int[]{3,2,1,5,6,4};
