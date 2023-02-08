@@ -3990,9 +3990,77 @@ public class Algorithm {
         return dp[n];
     }
 
+    /**
+     * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+     * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
+     * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        int slow = nums[0];
+        int fast = nums[0];
+        while (true) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+            if (slow == fast) {
+                break;
+            }
+        }
+        slow = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+     * 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。
+     * 例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        int res = 1;
+        dp[0] = 1;
+        for (int i = 1; i < nums.length; i++ ) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。
+     * 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+     * 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     * 输入: prices = [1,2,3,0,2]
+     * 输出: 3
+     * 解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]
+     * @param prices
+     * @return
+     */
+    public int maxProfit2(int[] prices) {
+
+        return 0;
+    }
+
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        int[] arr = new int[]{3,2,1,5,6,4};
-        System.out.println(algorithm.findKthLargest(arr, 2));
+        int[] arr = new int[]{1,3,6,7,9,4,10,5,6};
+        System.out.println(algorithm.lengthOfLIS(arr));
     }
 }
