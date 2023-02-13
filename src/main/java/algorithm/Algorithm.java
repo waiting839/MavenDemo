@@ -4053,10 +4053,60 @@ public class Algorithm {
      * @return
      */
     public int maxProfit2(int[] prices) {
-
-        return 0;
+        if (prices.length == 0) {
+            return 0;
+        }
+        //1.持有股票，分为原本持有f0或者今天购买f2 - prices[i]
+        //2.不持有股票，今天卖出，冷却期，即持有股票时的收益f0加上今天的收益prices[i]
+        //3.不持有股票，之前卖出，不是冷却期，分为f1昨天不买或者f2今天也不买
+        int f0 = -prices[0];
+        int f1 = 0;
+        int f2 = 0;
+        for (int i = 1; i < prices.length; i++) {
+            int newf0 = Math.max(f0, f2 - prices[i]);
+            int newf1 = f0 + prices[i];
+            int newf2 = Math.max(f1, f2);
+            f0 = newf0;
+            f1 = newf1;
+            f2 = newf2;
+        }
+        return Math.max(f1, f2);
     }
 
+    /**
+     * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+     * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+     * 你可以认为每种硬币的数量是无限的。
+     * @param coins
+     * @param amount
+     * @return
+     */
+    public int coinChange(int[] coins, int amount) {
+        int res = coinChange_help(coins, amount, new int[amount]);
+        return res;
+    }
+
+    private int coinChange_help(int[] coins, int amount, int[] visit) {
+        if (amount == 0) {
+            return 0;
+        }
+        if (amount < 0) {
+            return -1;
+        }
+        if (visit[amount - 1] != 0) {
+            return visit[amount - 1];
+        }
+        int res = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int sub = coinChange_help(coins, amount - coin, visit);
+            if (sub == -1) {
+                continue;
+            }
+            res = Math.min(res, sub + 1);
+        }
+        visit[amount - 1] = res == Integer.MAX_VALUE ? -1 : res;
+        return visit[amount - 1];
+    }
 
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
