@@ -4108,6 +4108,60 @@ public class Algorithm {
         return visit[amount - 1];
     }
 
+    /**
+     * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+     * 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。
+     * 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+     * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额 。
+     * @param root
+     * @return
+     */
+    public int rob(TreeNode root) {
+        int[] res = rob_help(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    private int[] rob_help(TreeNode root) {
+        if (root == null) {
+            return new int[]{0, 0};
+        }
+        int[] left = rob_help(root.left);
+        int[] right = rob_help(root.right);
+        //选择当前节点则左右子树都是不选
+        int select = root.val + left[1] + right[1];
+        //不选择当前节点则左右子树都可以选或者不选，取最大值
+        int notSelect = Math.max(left[1], left[0]) + Math.max(right[1], right[0]);
+        return new int[]{select, notSelect};
+    }
+
+    /**
+     * 给你一个整数 n ，对于 0 <= i <= n 中的每个 i ，计算其二进制表示中 1 的个数 ，返回一个长度为 n + 1 的数组 ans 作为答案。
+     * 输入：n = 5
+     * 输出：[0,1,1,2,1,2]
+     * 解释：
+     * 0 --> 0
+     * 1 --> 1
+     * 2 --> 10
+     * 3 --> 11
+     * 4 --> 100
+     * 5 --> 101
+     * @param n
+     * @return
+     */
+    public int[] countBits(int n) {
+        int[] res = new int[n + 1];
+        res[0] = 0;
+        int highBit = 0;
+        for (int i = 1; i <= n; i++) {
+            //如果i为2的整数次幂，则i只有最高位是1，i - 1的最高位不在i的那个位置，所以(i & (i - 1)) == 0可以判断i是否为2的整数次幂
+            if ((i & (i - 1)) == 0) {
+                highBit = i;
+            }
+            res[i] = res[i - highBit] + 1;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] arr = new int[]{1,3,6,7,9,4,10,5,6};
