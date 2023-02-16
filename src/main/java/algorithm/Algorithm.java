@@ -4162,9 +4162,80 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
+     * 输入: nums = [1,1,1,2,2,3], k = 2
+     * 输出: [1,2]
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        //使用最小堆
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (priorityQueue.size() < k) {
+                priorityQueue.add(new int[]{entry.getKey(), entry.getValue()});
+            } else if (priorityQueue.size() == k) {
+                if (priorityQueue.peek()[1] < entry.getValue()){
+                    priorityQueue.poll();
+                    priorityQueue.add(new int[]{entry.getKey(), entry.getValue()});
+                }
+            }
+        }
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = priorityQueue.poll()[1];
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个经过编码的字符串，返回它解码后的字符串。
+     * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+     * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+     * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+     * 输入：s = "3[a2[c]]"
+     * 输出："accaccacc"
+     * 输入：s = "3[a]2[bc]"
+     * 输出："aaabcbc"
+     * @param s
+     * @return
+     */
+    public String decodeString(String s) {
+        Stack<String> stack = new Stack<>();
+        Stack<Integer> k = new Stack<>();
+        StringBuffer res = new StringBuffer();
+        int m = 0;
+        for (char c : s.toCharArray()) {
+            if ('[' == c) {
+                k.push(m);
+                m = 0;
+                stack.push(res.toString());
+                res = new StringBuffer();
+            } else if (']' == c) {
+                StringBuffer tmp = new StringBuffer();
+                int tmpK = k.pop();
+                for (int i = 0; i < tmpK; i++) {
+                    tmp.append(res);
+                }
+                res = new StringBuffer(stack.pop() + tmp);
+            } else if (c >= '0' && c <= '9'){
+                m = m * 10 + Integer.parseInt(c + "");
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        int[] arr = new int[]{1,3,6,7,9,4,10,5,6};
-        System.out.println(algorithm.lengthOfLIS(arr));
+        String s = "3[a2[c]]";
+        System.out.println(algorithm.decodeString(s));
     }
 }

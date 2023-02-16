@@ -636,12 +636,18 @@ public class Demo {
 //        System.out.println(s.indexOf("leet"));
 //        System.out.println(s.substring(8).isEmpty());
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
-        Date date = new Date();
-        Instant inst = date.toInstant();
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = inst.atZone(zoneId);
-        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
-        System.out.println(dateTimeFormatter.format(localDateTime));
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd");
+//        Date date = new Date();
+//        Instant inst = date.toInstant();
+//        ZoneId zoneId = ZoneId.systemDefault();
+//        ZonedDateTime zonedDateTime = inst.atZone(zoneId);
+//        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+//        System.out.println(dateTimeFormatter.format(localDateTime));
+
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < 5; i++) {
+            stringBuffer.insert(stringBuffer.length(), i);
+        }
+        System.out.println(stringBuffer.toString());
     }
 }
