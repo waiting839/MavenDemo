@@ -644,10 +644,19 @@ public class Demo {
 //        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
 //        System.out.println(dateTimeFormatter.format(localDateTime));
 
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < 5; i++) {
-            stringBuffer.insert(stringBuffer.length(), i);
-        }
-        System.out.println(stringBuffer.toString());
+//        StringBuffer stringBuffer = new StringBuffer();
+//        for (int i = 0; i < 5; i++) {
+//            stringBuffer.insert(stringBuffer.length(), i);
+//        }
+//        System.out.println(stringBuffer.toString());
+
+        System.out.println(Integer.toBinaryString(0));
+        System.out.println(Integer.toBinaryString(1).length() - 1);
+        System.out.println(Integer.toBinaryString(2));
+        System.out.println(Integer.toBinaryString(4));
+        System.out.println(Integer.toBinaryString(8));
+        System.out.println(Integer.toBinaryString(16));
+        System.out.println(Integer.toBinaryString(32));
+
     }
 }

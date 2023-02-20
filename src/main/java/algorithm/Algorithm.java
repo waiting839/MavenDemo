@@ -4233,6 +4233,74 @@ public class Algorithm {
         return res.toString();
     }
 
+    /**
+     * 假设有打乱顺序的一群人站成一个队列，数组 people 表示队列中一些人的属性（不一定按顺序）。
+     * 每个 people[i] = [hi, ki] 表示第 i 个人的身高为 hi ，前面 正好 有 ki 个身高大于或等于 hi 的人。
+     * 请你重新构造并返回输入数组 people 所表示的队列。返回的队列应该格式化为数组 queue ，
+     * 其中 queue[j] = [hj, kj] 是队列中第 j 个人的属性（queue[0] 是排在队列前面的人）。
+     * 输入：people = [[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]
+     * 输出：[[5,0],[7,0],[5,2],[6,1],[4,4],[7,1]]
+     * @param people
+     * @return
+     */
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, (o1, o2) -> {
+            if (o1[0] != o2[0]) {
+                //身高由高到低排序
+                return o2[0] - o1[0];
+            } else {
+                //身高相等则位置由低到高排序
+                return o1[1] - o2[1];
+            }
+        });
+        LinkedList<int[]> res = new LinkedList<>();
+        for (int[] arr : people) {
+            //对排序之后进行插空，身高低的插在身高高的前面不会对身高高的造成影响
+            res.add(arr[1], arr);
+        }
+        return res.toArray(new int[res.size()][]);
+    }
+
+    /**
+     * 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+     * 输入：nums = [1,5,11,5]
+     * 输出：true
+     * 解释：数组可以分割成 [1, 5, 5] 和 [11] 。
+     * @param nums
+     * @return
+     */
+    public boolean canPartition(int[] nums) {
+
+        //TODO
+        return false;
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+     * 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public int pathSum2(TreeNode root, int targetSum) {
+        Map<Long, Integer> prefix = new HashMap<>();
+        prefix.put(0L, 1);
+        return pathSum2_help(root, targetSum, 0L, prefix);
+    }
+
+    private int pathSum2_help(TreeNode node, int targetSum, long cur, Map<Long, Integer> prefix) {
+        if (node == null) {
+            return 0;
+        }
+        cur += node.val;
+        int res = prefix.getOrDefault(cur - targetSum, 0);
+        prefix.put(cur, prefix.getOrDefault(cur, 0) + 1);
+        res += pathSum2_help(node.left, targetSum, cur, prefix);
+        res += pathSum2_help(node.right, targetSum, cur, prefix);
+        prefix.put(cur, prefix.get(cur) - 1);
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         String s = "3[a2[c]]";
