@@ -4301,6 +4301,81 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+     * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+     * 输入: s = "cbaebabacd", p = "abc"
+     * 输出: [0,6]
+     * 解释:
+     * 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+     * 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+     * @param s
+     * @param p
+     * @return
+     */
+    public List<Integer> findAnagrams(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+        if (sLen < pLen) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        int[] sArr = new int[26];
+        int[] pArr = new int[26];
+        for (int i = 0; i < pLen; i++) {
+            sArr[s.charAt(i) - 'a']++;
+            pArr[p.charAt(i) - 'a']++;
+        }
+        if (Arrays.equals(sArr, pArr)) {
+            res.add(0);
+        }
+        for (int i = 0; i < sLen - pLen; i++) {
+            sArr[s.charAt(i) - 'a']--;
+            sArr[s.charAt(i + pLen) - 'a']++;
+            if (Arrays.equals(sArr, pArr)) {
+                res.add(i + 1);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+     * 给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+     * @param x
+     * @param y
+     * @return
+     */
+    public int hammingDistance(int x, int y) {
+        return Integer.bitCount(x ^ y);
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 target 。
+     * 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：
+     * 例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 "+2-1" 。
+     * 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。
+     * @param nums
+     * @param target
+     * @return
+     */
+    int findTargetSumWays_res = 0;
+    public int findTargetSumWays(int[] nums, int target) {
+        findTargetSumWays_help(nums, target, 0, 0);
+        return findTargetSumWays_res;
+    }
+
+    private void findTargetSumWays_help(int[] nums, int target, int sum, int index) {
+        if (nums.length == index) {
+            if (sum == target) {
+                findTargetSumWays_res++;
+            }
+        } else {
+            findTargetSumWays_help(nums, target, sum + nums[index], index + 1);
+            findTargetSumWays_help(nums, target, sum - nums[index], index + 1);
+        }
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         String s = "3[a2[c]]";

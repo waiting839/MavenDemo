@@ -650,13 +650,21 @@ public class Demo {
 //        }
 //        System.out.println(stringBuffer.toString());
 
-        System.out.println(Integer.toBinaryString(0));
-        System.out.println(Integer.toBinaryString(1).length() - 1);
-        System.out.println(Integer.toBinaryString(2));
-        System.out.println(Integer.toBinaryString(4));
-        System.out.println(Integer.toBinaryString(8));
-        System.out.println(Integer.toBinaryString(16));
-        System.out.println(Integer.toBinaryString(32));
+//        System.out.println(Integer.toBinaryString(0));
+//        System.out.println(Integer.toBinaryString(1).length() - 1);
+//        System.out.println(Integer.toBinaryString(2));
+//        System.out.println(Integer.toBinaryString(4));
+//        System.out.println(Integer.toBinaryString(8));
+//        System.out.println(Integer.toBinaryString(16));
+//        System.out.println(Integer.toBinaryString(32));
 
+        int[] intArr = new int[]{1,2,3};
+        Integer[] integerArr = new Integer[]{1,2,3};
+        List intList = Arrays.asList(intArr);
+        List<Integer> integerList = Arrays.asList(integerArr);
+        System.out.println(intList.get(0));
+        System.out.println(integerList.get(0));
+        System.out.println(integerList.get(1));
+        System.out.println(intList.get(1));
     }
 }
