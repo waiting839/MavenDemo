@@ -4376,9 +4376,60 @@ public class Algorithm {
         }
     }
 
+    /**
+     * 给出二叉 搜索 树的根节点，该树的节点值各不相同，请你将其转换为累加树（Greater Sum Tree），
+     * 使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
+     * 提醒一下，二叉搜索树满足下列约束条件：
+     * 节点的左子树仅包含键 小于 节点键的节点。
+     * 节点的右子树仅包含键 大于 节点键的节点。
+     * 左右子树也必须是二叉搜索树。
+     * @param root
+     * @return
+     */
+    int convertBST_res = 0;
+    public TreeNode convertBST(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        convertBST(root.right);
+        convertBST_res += root.val;
+        root.val = convertBST_res;
+        convertBST(root.left);
+        return root;
+    }
+
+    /**
+     * 给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
+     * @param root
+     * @return
+     */
+    int diameterOfBinaryTree_res = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        diameterOfBinaryTree_help(root);
+        return diameterOfBinaryTree_res;
+    }
+
+    private int diameterOfBinaryTree_help(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = diameterOfBinaryTree_help(root.left);
+        int right = diameterOfBinaryTree_help(root.right);
+        diameterOfBinaryTree_res = Math.max(diameterOfBinaryTree_res, left + right);
+        return Math.max(left, right) + 1;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        String s = "3[a2[c]]";
-        System.out.println(algorithm.decodeString(s));
+        TreeNode treeNode1 = new TreeNode(1);
+        TreeNode treeNode2 = new TreeNode(2);
+        TreeNode treeNode3 = new TreeNode(3);
+        TreeNode treeNode4 = new TreeNode(4);
+        TreeNode treeNode5 = new TreeNode(5);
+        treeNode1.left = treeNode2;
+        treeNode1.right = treeNode3;
+        treeNode2.left = treeNode4;
+        treeNode2.right = treeNode5;
+        System.out.println(algorithm.diameterOfBinaryTree(treeNode1));
     }
 }
