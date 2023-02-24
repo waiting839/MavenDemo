@@ -4419,6 +4419,39 @@ public class Algorithm {
         return Math.max(left, right) + 1;
     }
 
+    /**
+     * 给你一个整数数组 nums ，你需要找出一个 连续子数组 ，如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+     * 请你找出符合题意的 最短 子数组，并输出它的长度。
+     * 输入：nums = [2,6,4,8,10,9,15]
+     * 输出：5
+     * 解释：你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+     * 1,3,2,4,5
+     * @param nums
+     * @return
+     */
+    public int findUnsortedSubarray(int[] nums) {
+        int n = nums.length;
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        int left = -1;
+        int right = -1;
+        for (int i = 0; i < nums.length; i++) {
+            //顺序检索最后一个不是升序的
+            if (max > nums[i]) {
+                right = i;
+            } else {
+                max = nums[i];
+            }
+            //倒序检索第一个不是降序的
+            if (min < nums[n - i - 1]) {
+                left = n - i - 1;
+            } else {
+                min = nums[n - i - 1];
+            }
+        }
+        return right == -1 ? 0 : right - left + 1;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         TreeNode treeNode1 = new TreeNode(1);
