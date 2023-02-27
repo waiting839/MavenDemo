@@ -4452,6 +4452,65 @@ public class Algorithm {
         return right == -1 ? 0 : right - left + 1;
     }
 
+    /**
+     * 给你两棵二叉树： root1 和 root2 。
+     * 想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。
+     * 合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。
+     * 返回合并后的二叉树。
+     * 注意: 合并过程必须从两个树的根节点开始。
+     * @param root1
+     * @param root2
+     * @return
+     */
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        TreeNode res = new TreeNode();
+        if (root1 == null && root2 == null) {
+            return null;
+        }
+        if (root1 == null) {
+            return root2;
+        }
+        if (root2 == null) {
+            return root1;
+        }
+        res.val = root1.val + root2.val;
+        res.left = mergeTrees(root1.left, root2.left);
+        res.right = mergeTrees(root1.right, root2.right);
+        return res;
+    }
+
+    /**
+     * 给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，
+     * 且每个任务都可以在 1 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。
+     * 然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+     * 你需要计算完成所有任务所需要的 最短时间。
+     * 输入：tasks = ["A","A","A","B","B","B"], n = 2
+     * 输出：8
+     * 解释：A -> B -> (待命) -> A -> B -> (待命) -> A -> B
+     *      在本示例中，两个相同类型任务之间必须间隔长度为 n = 2 的冷却时间，而执行一个任务只需要一个单位时间，所以中间出现了（待命）状态。
+     * @param tasks
+     * @param n
+     * @return
+     */
+    public int leastInterval(char[] tasks, int n) {
+        int[] arr = new int[26];
+        for (char c : tasks) {
+            arr[c - 'A']++;
+        }
+        //找出出现次数最多的字母
+        Arrays.sort(arr);
+        //minL是最小需要时间，例如次数最多的是A，出现4次，n为3，则A*** A*** A*** A，其中*是待插入字母或者待命
+        int minL = (arr[25] - 1) * (n + 1) + 1;
+        //如果另一个字母和次数最多的字母一样多，则会出现AB** AB** AB** AB，这样总数就+1
+        for (int i = 0; i < 25; i++) {
+            if (arr[i] == arr[25]) {
+                minL++;
+            }
+        }
+        //如果*被插满，则只需取tasks.length
+        return Math.max(minL, tasks.length);
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         TreeNode treeNode1 = new TreeNode(1);
