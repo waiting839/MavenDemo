@@ -4511,17 +4511,67 @@ public class Algorithm {
         return Math.max(minL, tasks.length);
     }
 
+    /**
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     * 输入：s = "abc"
+     * 输出：3
+     * 解释：三个回文子串: "a", "b", "c"
+     * @param s
+     * @return
+     */
+    public int countSubstrings(String s) {
+        int res = 0;
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 2; j++) {
+                int left = i;
+                int right = i + j;
+                while (left >= 0 && right < n && s.charAt(left--) == s.charAt(right++)) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个整数数组 temperatures ，表示每天的温度，返回一个数组 answer ，其中 answer[i] 是指对于第 i 天，下一个更高温度出现在几天后。
+     * 如果气温在这之后都不会升高，请在该位置用 0 来代替。
+     * 输入: temperatures = [73,74,75,71,69,72,76,73]
+     * 输出: [1,1,4,2,1,1,0,0]
+     * @param temperatures
+     * @return
+     */
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] res = new int[temperatures.length];
+        res[temperatures.length - 1] = 0;
+        for (int i = temperatures.length - 2; i >= 0; i--) {
+            if (temperatures[i] >= temperatures[i + 1]) {
+                int index = res[i + 1];
+                int sum = index + i + 1;
+                while (index != 0) {
+                    if (temperatures[i] < temperatures[sum]) {
+                        res[i] = sum - i;
+                        break;
+                    }
+                    index = res[sum];
+                    sum += index;
+                }
+                if (index == 0) {
+                    res[i] = 0;
+                }
+            } else {
+                res[i] = 1;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        TreeNode treeNode1 = new TreeNode(1);
-        TreeNode treeNode2 = new TreeNode(2);
-        TreeNode treeNode3 = new TreeNode(3);
-        TreeNode treeNode4 = new TreeNode(4);
-        TreeNode treeNode5 = new TreeNode(5);
-        treeNode1.left = treeNode2;
-        treeNode1.right = treeNode3;
-        treeNode2.left = treeNode4;
-        treeNode2.right = treeNode5;
-        System.out.println(algorithm.diameterOfBinaryTree(treeNode1));
+        System.out.println(algorithm.countSubstrings("fdsklf"));
     }
 }
