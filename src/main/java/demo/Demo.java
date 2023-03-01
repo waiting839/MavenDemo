@@ -658,13 +658,13 @@ public class Demo {
 //        System.out.println(Integer.toBinaryString(16));
 //        System.out.println(Integer.toBinaryString(32));
 
-        int[] intArr = new int[]{1,2,3};
-        Integer[] integerArr = new Integer[]{1,2,3};
-        List intList = Arrays.asList(intArr);
-        List<Integer> integerList = Arrays.asList(integerArr);
-        System.out.println(intList.get(0));
-        System.out.println(integerList.get(0));
-        System.out.println(integerList.get(1));
-        System.out.println(intList.get(1));
+//        int[] intArr = new int[]{1,2,3};
+//        Integer[] integerArr = new Integer[]{1,2,3};
+//        List intList = Arrays.asList(intArr);
+//        List<Integer> integerList = Arrays.asList(integerArr);
+//        System.out.println(intList.get(0));
+//        System.out.println(integerList.get(0));
+//        System.out.println(integerList.get(1));
+//        System.out.println(intList.get(1));
     }
 }

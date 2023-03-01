@@ -4570,8 +4570,87 @@ public class Algorithm {
         return res;
     }
 
+    /**
+     * 给定一个长度为 n 的 0 索引整数数组 nums。初始位置为 nums[0]。
+     * 每个元素 nums[i] 表示从索引 i 向前跳转的最大长度。换句话说，如果你在 nums[i] 处，你可以跳转到任意 nums[i + j] 处:
+     * 0 <= j <= nums[i]
+     * i + j < n
+     * 返回到达 nums[n - 1] 的最小跳跃次数。生成的测试用例可以到达 nums[n - 1]。
+     * 输入: nums = [2,3,1,1,4]
+     * 输出: 2
+     * 解释: 跳到最后一个位置的最小跳跃数是 2。
+     *      从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        if (nums.length == 1) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 1; j <= nums[i]; j++) {
+                if (i + j >= nums.length - 1) {
+                    return dp[i] + 1;
+                }
+                dp[i + j] = dp[i + j] == 0 ? dp[i] + 1 : dp[i + j];
+            }
+        }
+        return dp[nums.length - 1];
+
+        //best 贪心 找到最远的，当遍历到最远的end时step再增加
+//        int maxL = 0;
+//        int step = 0;
+//        int end = 0;
+//        for (int i = 0; i < nums.length - 1; i++) {
+//            maxL = Math.max(maxL, i + nums[i]);
+//            if (end == i) {
+//                end = maxL;
+//                step++;
+//            }
+//        }
+//        return step;
+    }
+
+    /**
+     * 给定三个字符串 s1、s2、s3，请你帮忙验证 s3 是否是由 s1 和 s2 交错 组成的。
+     * 两个字符串 s 和 t 交错 的定义与过程如下，其中每个字符串都会被分割成若干 非空 子字符串：
+     * s = s1 + s2 + ... + sn
+     * t = t1 + t2 + ... + tm
+     * |n - m| <= 1
+     * 交错 是 s1 + t1 + s2 + t2 + s3 + t3 + ... 或者 t1 + s1 + t2 + s2 + t3 + s3 + ...
+     * 注意：a + b 意味着字符串 a 和 b 连接。
+     * @param s1
+     * @param s2
+     * @param s3
+     * @return
+     */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int m = s1.length();
+        int n = s2.length();
+        int t = s3.length();
+        if (m + n != t) {
+            return false;
+        }
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        dp[0][0] = true;
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                int p = i + j - 1;
+                if (i > 0) {
+                    dp[i][j] = dp[i][j] || (dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(p));
+                }
+                if (j > 0) {
+                    dp[i][j] = dp[i][j] || (dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(p));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        System.out.println(algorithm.countSubstrings("fdsklf"));
+        int[] arr = new int[]{2,3,1,1,4};
+        System.out.println(algorithm.jump(arr));
     }
 }
