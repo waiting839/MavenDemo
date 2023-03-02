@@ -3296,6 +3296,13 @@ public class Algorithm {
      * @return
      */
     public int numTrees(int n) {
+        //dp[i] = i个不同的数组成的二叉搜索数的个数
+        //假设 i = 5
+        //当根节点等于 1 时 ，其余数字都比1大，只能在右边 dp[i] += dp[4]
+        //当根节点等于 2 时，左边有一个1比2小，右边有三个比2大的数字 dp[i] += dp[1] * dp[3]
+        //当根节点等于 3 时，左边有两个数比3小，右边有两个数比3大的数字 dp[i] += dp[2] * dp[2]
+        //...
+        //知道根节点等于5，左边有4个数字比5小，只能放在5的左边,dp[i] += dp[4]
         int[] dp = new int[n + 1];
         dp[0] = 1;
         dp[1] = 1;
@@ -4270,9 +4277,38 @@ public class Algorithm {
      * @return
      */
     public boolean canPartition(int[] nums) {
-
-        //TODO
-        return false;
+        int n = nums.length;
+        if (n < 2) {
+            return false;
+        }
+        int sum = 0;
+        int maxNum = 0;
+        for (int num : nums) {
+            sum += num;
+            maxNum = Math.max(maxNum, num);
+        }
+        if (sum % 2 == 1) {
+            return false;
+        }
+        int target = sum / 2;
+        if (maxNum > target) {
+            return false;
+        }
+        boolean[][] dp = new boolean[n][target + 1];
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = true;
+        }
+        //完全背包
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= target; j++) {
+                if (j >= nums[i]) {
+                    dp[i][j] = dp[i - 1][j] | dp[i - 1][j - nums[i]];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n - 1][target];
     }
 
     /**
@@ -4646,6 +4682,47 @@ public class Algorithm {
             }
         }
         return dp[m][n];
+    }
+
+    /**
+     * 给你一个整数 n ，请你生成并返回所有由 n 个节点组成且节点值从 1 到 n 互不相同的不同 二叉搜索树 。
+     * 可以按 任意顺序 返回答案。
+     * @param n
+     * @return
+     */
+    public List<TreeNode> generateTrees(int n) {
+        // TODO
+        return null;
+    }
+
+    /**
+     * 给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格。
+     * 在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。
+     * 你也可以先购买，然后在 同一天 出售。
+     * 返回 你能获得的 最大 利润 。
+     * 输入：prices = [7,1,5,3,6,4]
+     * 输出：7
+     * 解释：在第 2 天（股票价格 = 1）的时候买入，在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5 - 1 = 4 。
+     *      随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6 - 3 = 3 。
+     *      总利润为 4 + 3 = 7 。
+     * @param prices
+     * @return
+     */
+    public int maxProfitII(int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+        //持有股票
+        int p1 = -prices[0];
+        //不持有股票
+        int p2 = 0;
+        for (int i = 0; i < prices.length; i++) {
+            int newp1 = Math.max(p1, p2 - prices[i]);
+            int newp2 = Math.max(p2, prices[i] + p1);
+            p1 = newp1;
+            p2 = newp2;
+        }
+        return p2;
     }
 
     public static void main(String[] args) {
