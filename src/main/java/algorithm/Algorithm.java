@@ -4725,6 +4725,86 @@ public class Algorithm {
         return p2;
     }
 
+    /**
+     * 给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+     * candidates 中的每个数字在每个组合中只能使用 一次 。
+     * 注意：解集不能包含重复的组合。
+     * 输入: candidates = [10,1,2,7,6,1,5], target = 8,
+     * 输出:
+     * [
+     * [1,1,6],
+     * [1,2,5],
+     * [1,7],
+     * [2,6]
+     * ]
+     * @param candidates
+     * @param target
+     * @return
+     */
+    List<List<Integer>> combinationSum2_res = new ArrayList<>();
+    LinkedList<Integer> combinationSum2_path = new LinkedList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        combinationSum2_help(candidates, target, 0, 0);
+        return combinationSum2_res;
+    }
+
+    private void combinationSum2_help(int[] candidates, int target, int sum, int start) {
+        if (sum == target) {
+            combinationSum2_res.add(new ArrayList<>(combinationSum2_path));
+            return;
+        }
+        //排序了相加然后大于target直接跳过
+        for (int i = start; i < candidates.length && sum + candidates[i] <= target; i++) {
+            //排序了，重复的元素就相当于重复的组合
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            sum += candidates[i];
+            combinationSum2_path.add(candidates[i]);
+            combinationSum2_help(candidates, target, sum, i + 1);
+            sum -= candidates[i];
+            combinationSum2_path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。
+     * 输入：nums = [1,1,2]
+     * 输出：
+     * [[1,1,2],
+     *  [1,2,1],
+     *  [2,1,1]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> permuteUnique_res = new ArrayList<>();
+    LinkedList<Integer> permuteUnique_path = new LinkedList<>();
+    boolean[] permuteUnique_visit;
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        permuteUnique_visit = new boolean[nums.length];
+        Arrays.sort(nums);
+        permuteUnique_help(nums);
+        return permuteUnique_res;
+    }
+
+    private void permuteUnique_help(int[] nums) {
+        if (permuteUnique_path.size() == nums.length) {
+            permuteUnique_res.add(new ArrayList<>(permuteUnique_path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (permuteUnique_visit[i] || (i > 0 && nums[i] == nums[i - 1] && !permuteUnique_visit[i - 1])) {
+                continue;
+            }
+            permuteUnique_visit[i] = true;
+            permuteUnique_path.add(nums[i]);
+            permuteUnique_help(nums);
+            permuteUnique_visit[i] = false;
+            permuteUnique_path.removeLast();
+        }
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] arr = new int[]{2,3,1,1,4};
