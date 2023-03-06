@@ -666,5 +666,15 @@ public class Demo {
 //        System.out.println(integerList.get(0));
 //        System.out.println(integerList.get(1));
 //        System.out.println(intList.get(1));
+
+        String s = "1230456078";
+        StringBuilder sb = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (c != '0') {
+                sb.append(c);
+            }
+        }
+        System.out.println(sb.toString());
+
     }
 }

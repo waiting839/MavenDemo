@@ -4794,6 +4794,7 @@ public class Algorithm {
             return;
         }
         for (int i = 0; i < nums.length; i++) {
+            //没有选上一个数且上一个数和当前的相等
             if (permuteUnique_visit[i] || (i > 0 && nums[i] == nums[i - 1] && !permuteUnique_visit[i - 1])) {
                 continue;
             }
@@ -4805,9 +4806,76 @@ public class Algorithm {
         }
     }
 
+    /**
+     * 给定两个整数 n 和 k，返回范围 [1, n] 中所有可能的 k 个数的组合。
+     * 你可以按 任何顺序 返回答案。
+     * 输入：n = 4, k = 2
+     * 输出：
+     * [
+     *   [2,4],
+     *   [3,4],
+     *   [2,3],
+     *   [1,2],
+     *   [1,3],
+     *   [1,4],
+     * ]
+     * @param n
+     * @param k
+     * @return
+     */
+    List<List<Integer>> combine_res = new ArrayList<>();
+    LinkedList<Integer> combine_path = new LinkedList<>();
+    public List<List<Integer>> combine(int n, int k) {
+        combine_help(n, k, 1);
+        return combine_res;
+    }
+
+    private void combine_help(int n, int k, int index) {
+        if (combine_path.size() == k) {
+            combine_res.add(new ArrayList<>(combine_path));
+            return;
+        }
+        for (int i = index; i <= n; i++) {
+            combine_path.add(i);
+            combine_help(n, k, i + 1);
+            combine_path.removeLast();
+        }
+    }
+
+    /**
+     * 给你一个整数数组 nums ，其中可能包含重复元素，请你返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。返回的解集中，子集可以按 任意顺序 排列。
+     * 输入：nums = [1,2,2]
+     * 输出：[[],[1],[1,2],[1,2,2],[2],[2,2]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> subsetsWithDup_res = new ArrayList<>();
+    LinkedList<Integer> subsetsWithDup_path = new LinkedList<>();
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        boolean[] visited = new boolean[nums.length];
+        Arrays.sort(nums);
+        subsetsWithDup_help(nums, visited, 0);
+        return subsetsWithDup_res;
+    }
+
+    private void subsetsWithDup_help(int[] nums, boolean[] visited, int index) {
+        subsetsWithDup_res.add(new ArrayList<>(subsetsWithDup_path));
+        for (int i = index; i < nums.length; i++) {
+            if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])) {
+                continue;
+            }
+            subsetsWithDup_path.add(nums[i]);
+            visited[i] = true;
+            subsetsWithDup_help(nums, visited, i + 1);
+            subsetsWithDup_path.removeLast();
+            visited[i] = false;
+        }
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
-        int[] arr = new int[]{2,3,1,1,4};
-        System.out.println(algorithm.jump(arr));
+        int[] arr = new int[]{1,2,2};
+        System.out.println(algorithm.subsetsWithDup(arr));
     }
 }
