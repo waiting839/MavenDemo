@@ -4873,6 +4873,65 @@ public class Algorithm {
         }
     }
 
+    /**
+     * 给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
+     * 返回这三个数的和。
+     * 假定每组输入只存在恰好一个解。
+     * 输入：nums = [-1,2,1,-4], target = 1
+     * 输出：2
+     * 解释：与 target 最接近的和是 2 (-1 + 2 + 1 = 2) 。
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        int closest = Integer.MAX_VALUE;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == target) {
+                    return sum;
+                } else if (sum > target) {
+                    closest = (sum - target > Math.abs(closest - target)) ? closest : sum;
+                    k--;
+                } else if (sum < target) {
+                    closest = (target - sum > Math.abs(closest - target)) ? closest : sum;
+                    j++;
+                }
+            }
+        }
+        return closest;
+    }
+
+    /**
+     * 给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使得出现次数超过两次的元素只出现两次 ，返回删除后数组的新长度。
+     * 不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成
+     * 输入：nums = [1,1,1,2,2,3]
+     * 输出：5, nums = [1,1,2,2,3]
+     * 解释：函数应返回新长度 length = 5, 并且原数组的前五个元素被修改为 1, 1, 2, 2, 3 。 不需要考虑数组中超出新长度后面的元素。
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        int n = nums.length;
+        if (n < 2) {
+            return n;
+        }
+        int slow = 2;
+        int fast = 2;
+        while (fast < n) {
+            if (nums[slow - 2] != nums[fast]) {
+                nums[slow] = nums[fast];
+                slow++;
+            }
+            fast++;
+        }
+        return slow;
+    }
+
     public static void main(String[] args) {
         Algorithm algorithm = new Algorithm();
         int[] arr = new int[]{1,2,2};
