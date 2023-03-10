@@ -1,7 +1,6 @@
 package algorithm;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 吴嘉烺
@@ -130,5 +129,136 @@ public class Hot100 {
             }
         }
         return s.substring(begin, maxL + begin);
+    }
+
+    /**
+     * 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+     * 找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+     * 返回容器可以储存的最大水量。
+     * 说明：你不能倾斜容器
+     * 输入：[1,8,6,2,5,4,8,3,7]
+     * 输出：49
+     * 解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int res = 0;
+        while (left < right) {
+            res = Math.max(res, (left - right) * Math.min(height[left], height[right]));
+            if (height[left] > height[right]) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，
+     * 同时还满足 nums[i] + nums[j] + nums[k] == 0 。请你返回所有和为 0 且不重复的三元组。
+     * 注意：答案中不可以包含重复的三元组。
+     * 输入：nums = [-1,0,1,2,-1,-4]
+     * 输出：[[-1,-1,2],[-1,0,1]]
+     * 解释：
+     * nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+     * nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+     * nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+     * 不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+     * 注意，输出的顺序和三元组的顺序并不重要。
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < n - 2; i++) {
+            if (nums[i] > 0) {
+                break;
+            }
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            int j = i + 1;
+            int k = n - 1;
+            while (j < k) {
+                if (-nums[i] - nums[k] == nums[j]) {
+                    res.add(Arrays.asList(new Integer[]{nums[i], nums[j], nums[k]}));
+                    j++;
+                    k--;
+                    while (j < k && nums[j - 1] == nums[j]) {
+                        j++;
+                    }
+                    while (j < k && nums[k + 1] == nums[k]) {
+                        k--;
+                    }
+                } else if (-nums[i] - nums[k] > nums[j]) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     * 输入：head = [1,2,3,4,5], n = 2
+     * 输出：[1,2,3,5]
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        int size = 0;
+        ListNode node = head;
+        while (node != null) {
+            size++;
+            node = node.next;
+        }
+        node = head;
+        for (int i = 0; i < size - n - 1; i++) {
+            node = node.next;
+        }
+        node.next = node.next.next;
+        return head;
+    }
+
+    /**
+     * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+     * 有效字符串需满足：
+     * 左括号必须用相同类型的右括号闭合。
+     * 左括号必须以正确的顺序闭合。
+     * 每个右括号都有一个对应的相同类型的左括号。
+     * 输入：s = "()"
+     * 输出：true
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                if ((c == ')' && stack.peek() == '(') ||
+                        (c == '}' && stack.peek() == '{') ||
+                        (c == ']' && stack.peek() == '[')) {
+                    stack.pop();
+                }
+            }
+        }
+        return stack.isEmpty();
     }
 }
