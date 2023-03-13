@@ -261,4 +261,161 @@ public class Hot100 {
         }
         return stack.isEmpty();
     }
+
+    /**
+     * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+     * 输入：l1 = [1,2,4], l2 = [1,3,4]
+     * 输出：[1,1,2,3,4,4]
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode res = new ListNode();
+        ListNode head = res;
+        while (list1 != null && list2 != null) {
+            if (list1.val >= list2.val) {
+                head.next = new ListNode(list2.val);
+                list2 = list2.next;
+            } else {
+                head.next = new ListNode(list1.val);
+                list1 = list1.next;
+            }
+            head = head.next;
+        }
+        if (list1 != null) {
+            head.next = list1;
+        }
+        if (list2 != null) {
+            head.next = list2;
+        }
+        return res.next;
+    }
+
+    /**
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     * 输入：n = 3
+     * 输出：["((()))","(()())","(())()","()(())","()()()"]
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        generateParenthesis_help(n, new StringBuilder(), res, 0, 0);
+        return res;
+    }
+
+    private void generateParenthesis_help(int n, StringBuilder stringBuilder, List<String> list, int left, int right) {
+        if (stringBuilder.length() == n * 2) {
+            list.add(stringBuilder.toString());
+            return;
+        }
+        //穷举法，左右括号的数量用left right去计数
+        if (left < n) {
+            stringBuilder.append("(");
+            generateParenthesis_help(n, stringBuilder, list, left + 1, right);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        if (left > right) {
+            stringBuilder.append(")");
+            generateParenthesis_help(n, stringBuilder, list, left, right + 1);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+    }
+
+    /**
+     * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+     * 例如，arr = [1,2,3] ，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1] 。
+     * 整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，
+     * 那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。
+     * 例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。
+     * 类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。
+     * 而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。
+     * 给你一个整数数组 nums ，找出 nums 的下一个排列。
+     * 必须 原地 修改，只允许使用额外常数空间
+     * 输入：nums = [1,2,3]
+     * 输出：[1,3,2]
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        int i = nums.length - 2;
+        //从后面找出降序前的一个数字
+        while (i >= 0 && nums[i] >= nums[i - 1]) {
+            i--;
+        }
+        if (i >= 0) {
+            int j = nums.length - 1;
+            //从后面找出第一个比nums[i]大的数字，然后交换
+            while (j >= 0 && nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        //再反转，相当于升序
+        reverse(nums, i + 1);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    private void reverse(int[] nums, int start) {
+        int i = start;
+        int j = nums.length - 1;
+        while (i < j) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
+            i++;
+            j--;
+        }
+    }
+
+    /**
+     * 整数数组 nums 按升序排列，数组中的值 互不相同 。
+     * 在传递给函数之前，nums 在预先未知的某个下标 k（0 <= k < nums.length）上进行了 旋转，
+     * 使数组变为 [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]（下标 从 0 开始 计数）。
+     * 例如， [0,1,2,4,5,6,7] 在下标 3 处经旋转后可能变为 [4,5,6,7,0,1,2] 。
+     * 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
+     * 你必须设计一个时间复杂度为 O(log n) 的算法解决此问题。
+     * 输入：nums = [4,5,6,7,0,1,2], target = 0
+     * 输出：4
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int search(int[] nums, int target) {
+        int i = 0;
+        int j = nums.length - 1;
+        while (i < j) {
+            int mid = i + (j - i) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            //判断mid前面是不是有序的，有序即是后面才发生旋转
+            } else if (nums[mid] >= nums[i]) {
+                //前面有序，target小于nums[mid]而且target大于等于nums[i]才能确保一定是j减少
+                //后面无序的直接i增加
+                if (nums[mid] > target && target >= nums[i]) {
+                    j = mid - 1;
+                } else {
+                    i = mid + 1;
+                }
+            } else {
+                //后面无序，target大于nums[mid]而且target小于等于nums[j]才能确保一定是i增加
+                if (nums[mid] < target && target <= nums[j]) {
+                    i = mid + 1;
+                } else {
+                    j = mid - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        Hot100 hot100 = new Hot100();
+        hot100.generateParenthesis(3);
+    }
 }
