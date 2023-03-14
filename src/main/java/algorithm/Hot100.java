@@ -414,8 +414,137 @@ public class Hot100 {
         return -1;
     }
 
+    /**
+     * 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+     * 如果数组中不存在目标值 target，返回 [-1, -1]。
+     * 你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+     * 输入：nums = [5,7,7,8,8,10], target = 8
+     * 输出：[3,4]
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] searchRange(int[] nums, int target) {
+        int i = 0, j = nums.length - 1;
+        //找出target在nums中第一个位置（左边界）
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
+            if (nums[mid] >= target) {
+                j = mid - 1;
+            } else {
+                i = mid + 1;
+            }
+        }
+        if (i >= nums.length || nums[i] != target) {
+            return new int[]{-1, -1};
+        } else {
+            int[] res = new int[2];
+            res[0] = i;
+            while (i + 1 < nums.length && nums[i + 1] == target) {
+                i++;
+            }
+            res[1] = i;
+            return res;
+        }
+    }
+
+    /**
+     * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，
+     * 并以列表形式返回。你可以按 任意顺序 返回这些组合。
+     * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
+     * 对于给定的输入，保证和为 target 的不同组合数少于 150 个
+     * 输入：candidates = [2,3,6,7], target = 7
+     * 输出：[[2,2,3],[7]]
+     * 解释：
+     * 2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+     * 7 也是一个候选， 7 = 7 。
+     * 仅有这两种组合。
+     * @param candidates
+     * @param target
+     * @return
+     */
+    List<List<Integer>> combinationSum_res = new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        combinationSum_help(candidates, target, 0, new LinkedList<>(), 0);
+        return combinationSum_res;
+    }
+
+    private void combinationSum_help(int[] candidates, int target, int sum, LinkedList<Integer> path, int start) {
+        if (sum == target) {
+            combinationSum_res.add(new ArrayList<>(path));
+            return;
+        }
+        //通过i = start 去保证不会回头选择前面的数
+        for (int i = start; i < candidates.length && sum + candidates[i] <= target; i++) {
+            sum += candidates[i];
+            path.add(candidates[i]);
+            combinationSum_help(candidates, target, sum, path, i);
+            sum -= candidates[i];
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> permute_res = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        permute_help(nums, new LinkedList<>());
+        return permute_res;
+    }
+
+    private void permute_help(int[] nums, LinkedList<Integer> path) {
+        if (path.size() == nums.length) {
+            permute_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (path.contains(nums[i])) {
+                continue;
+            }
+            path.add(nums[i]);
+            permute_help(nums, path);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+     * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+     * 输入：matrix =
+     * [[1,2,3],
+     * [4,5,6],
+     * [7,8,9]]
+     * 输出：
+     * [[7,4,1],
+     * [8,5,2],
+     * [9,6,3]]
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        //先上下翻转
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = tmp;
+            }
+        }
+        //再沿左对角线翻转
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.generateParenthesis(3);
+        hot100.combinationSum(new int[]{6,7,2,3}, 7);
     }
 }
