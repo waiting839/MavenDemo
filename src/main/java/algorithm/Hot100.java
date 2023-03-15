@@ -543,8 +543,109 @@ public class Hot100 {
         }
     }
 
+    /**
+     * 给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+     * 字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+     * 输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+     * 输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            //用排序好的异位词作为key
+            String key = new String(chars);
+            if (map.containsKey(key)) {
+                map.get(key).add(str);
+            } else {
+                List<String> list = new ArrayList<>();
+                list.add(str);
+                map.put(key, list);
+            }
+        }
+        map.entrySet().forEach(e -> {
+            res.add(e.getValue());
+        });
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * 子数组 是数组中的一个连续部分。
+     * 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+     * 输出：6
+     * 解释：连续子数组 [4,-1,2,1] 的和最大，为 6
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int res = nums[0];
+        int tmp = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            tmp = Math.max(nums[i], nums[i] + tmp);
+            res = Math.max(res, tmp);
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+     * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 判断你是否能够到达最后一个下标。
+     * 输入：nums = [2,3,1,1,4]
+     * 输出：true
+     * 解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        int maxRight = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i <= maxRight) {
+                //计算可达最长长度
+                maxRight = Math.max(maxRight, i + nums[i]);
+                if (maxRight >= nums.length - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。
+     * 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+     * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+     * 输出：[[1,6],[8,10],[15,18]]
+     * 解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals[0] == null) {
+            return new int[][]{};
+        }
+        List<int[]> list = new ArrayList<>();
+        //左区间排序升序
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        for (int i = 0; i < intervals.length; i++) {
+            int left = intervals[i][0];
+            int right = intervals[i][1];
+            if (list.isEmpty() || list.get(list.size() - 1)[1] < left) {
+                list.add(new int[]{left, right});
+            } else {
+                list.get(list.size() - 1)[1] = Math.max(list.get(list.size() - 1)[1], right);
+            }
+        }
+        return list.toArray(new int[][]{});
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.combinationSum(new int[]{6,7,2,3}, 7);
+        hot100.maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4});
     }
 }
