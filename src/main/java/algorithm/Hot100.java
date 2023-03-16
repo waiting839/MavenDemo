@@ -644,6 +644,121 @@ public class Hot100 {
         return list.toArray(new int[][]{});
     }
 
+    /**
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+     * 问总共有多少条不同的路径？
+     * 输入：m = 3, n = 7
+     * 输出：28
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    /**
+     * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+     * 说明：每次只能向下或者向右移动一步。
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = grid[i][j];
+                } else if (i == 0) {
+                    dp[i][j] = grid[i][j] + dp[i][j - 1];
+                } else if (j == 0) {
+                    dp[i][j] = grid[i][j] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = grid[i][j] + Math.min(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    /**
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int cur = 2;
+        int pre = 1;
+        while (n > 2) {
+            int tmp = cur;
+            cur = cur + pre;
+            pre = tmp;
+            n--;
+        }
+        return cur;
+    }
+
+    /**
+     * 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+     * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+     * 必须在不使用库内置的 sort 函数的情况下解决这个问题。
+     * 输入：nums = [2,0,2,1,1,0]
+     * 输出：[0,0,1,1,2,2]
+     * @param nums
+     */
+    public void sortColors(int[] nums) {
+        sortColors_help(nums, 0, nums.length - 1);
+    }
+
+    private void sortColors_help(int[] nums, int i, int j) {
+        if (i >= j) {
+            return;
+        }
+        int index = sortColors_quickSort(nums, i, j);
+        sortColors_quickSort(nums, i, index - 1);
+        sortColors_quickSort(nums, index + 1, j);
+    }
+
+    private int sortColors_quickSort(int[] nums, int i, int j) {
+        int k = nums[i];
+        int l = i + 1;
+        int r = j;
+        while (l < r) {
+            while (l < r && nums[r] > k) {
+                r--;
+            }
+            while (l < r && nums[l] <= k) {
+                l++;
+            }
+            if (r < l) {
+                swap(nums, l, r);
+            }
+        }
+        nums[i] = nums[r];
+        nums[r] = k;
+        return r;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4});
