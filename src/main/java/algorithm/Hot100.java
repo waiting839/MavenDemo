@@ -759,8 +759,113 @@ public class Hot100 {
         return r;
     }
 
+    /**
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     * 输入：nums = [1,2,3]
+     * 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> subsets_res = new ArrayList<>();
+    public List<List<Integer>> subsets(int[] nums) {
+        subsets_help(nums, new LinkedList<>(), 0);
+        return subsets_res;
+    }
+
+    private void subsets_help(int[] nums, LinkedList<Integer> path, int start) {
+        subsets_res.add(new ArrayList<>(path));
+        if(start == nums.length){
+            return;
+        }
+        for (int i = start; i < nums.length; i++) {
+            path.add(nums[i]);
+            subsets_help(nums, path, i + 1);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     * 输入：board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+     * 输出：true
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (exist_help(board, i, j, word, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean exist_help(char[][] board, int i, int j, String word, int index) {
+        if (i < 0 || i > board.length - 1 || j < 0 || j > board[0].length - 1 || board[i][j] != word.charAt(index)) {
+            return false;
+        }
+        if (index == word.length() - 1) {
+            return true;
+        }
+        char tmp = board[i][j];
+        board[i][j] = '/';
+        boolean res =  exist_help(board, i + 1, j, word, index + 1)
+                || exist_help(board, i - 1, j, word, index + 1)
+                || exist_help(board, i, j + 1, word, index + 1)
+                || exist_help(board, i, j - 1, word, index + 1);
+        board[i][j] = tmp;
+        return res;
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+     * 输入：root = [1,null,2,3]
+     * 输出：[1,3,2]
+     * @param root
+     * @return
+     */
+    List<Integer> inorderTraversal_res = new ArrayList<>();
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        inorderTraversal(root.left);
+        inorderTraversal_res.add(root.val);
+        inorderTraversal(root.right);
+        return inorderTraversal_res;
+    }
+
+    /**
+     * 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。
+     * 输入：n = 3
+     * 输出：5
+     * @param n
+     * @return
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                //除去根节点一共有i - 1个节点
+                //假如右边从0个开始增加到i，左边就有i - j个，右边就有j - 1个
+                int left = dp[i - j];
+                int right = dp[j - 1];
+                //再组合相乘即可
+                dp[i] += left * right;
+            }
+        }
+        return dp[n];
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.maxSubArray(new int[]{-2,1,-3,4,-1,2,1,-5,4});
+        hot100.subsets(new int[]{1,2,3});
     }
 }
