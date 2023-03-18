@@ -864,6 +864,93 @@ public class Hot100 {
         return dp[n];
     }
 
+    /**
+     * 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+     * 有效 二叉搜索树定义如下：
+     * 节点的左子树只包含 小于 当前节点的数。
+     * 节点的右子树只包含 大于 当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     * @param root
+     * @return
+     */
+    List<Integer> isValidBST_res = new ArrayList<>();
+    public boolean isValidBST(TreeNode root) {
+        //通过中序遍历获取所有值，二叉搜索树的中序遍历是升序排序的
+        isValidBST_help(root);
+        for (int i = 1; i < isValidBST_res.size(); i++) {
+            if (isValidBST_res.get(i) <= isValidBST_res.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void isValidBST_help(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        isValidBST_help(root.left);
+        isValidBST_res.add(root.val);
+        isValidBST_help(root.right);
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+     * 输入：root = [1,2,2,3,4,4,3]
+     * 输出：true
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return isSymmetric_help(root.left, root.right);
+    }
+
+    private boolean isSymmetric_help(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        //判断是否同时为空和对应的值是否相等
+        if ((left == null || right == null) || (left.val != right.val)) {
+            return false;
+        }
+        return isSymmetric_help(left.left, right.right) && isSymmetric_help(left.right, right.left);
+    }
+
+    /**
+     * 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）
+     * 输入：root = [3,9,20,null,null,15,7]
+     * 输出：[[3],[9,20],[15,7]]
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        List<List<Integer>> res = new ArrayList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> tmp = new ArrayList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                tmp.add(node.val);
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            res.add(tmp);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.subsets(new int[]{1,2,3});
