@@ -951,6 +951,98 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给定一个二叉树，找出其最大深度。
+     * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+     * 说明: 叶子节点是指没有子节点的节点。
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+
+    /**
+     * 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+     * 输入: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+     * 输出: [3,9,20,null,null,15,7]
+     * @param preorder
+     * @param inorder
+     * @return
+     */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++){
+            inorderMap.put(inorder[i], i);
+        }
+        return buildTree_help(preorder, inorderMap, 0, 0, inorder.length - 1);
+    }
+
+    private TreeNode buildTree_help(int[] preorder, Map<Integer, Integer> inorderMap, int root, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        TreeNode node = new TreeNode(preorder[root]);
+        //i为inorder中根节点的下标
+        int i = inorderMap.get(preorder[root]);
+        //root是相对于predoder，找根节点
+        //left和right分别是inorder的左右边界
+        //root + 1是指左子树的下一个根节点（相对于preorder）
+        node.left = buildTree_help(preorder, inorderMap, root + 1, left, i - 1);
+        //root + 1 + i - left是指右子树的下一个根节点，i - left是指左子树有这么多个节点
+        node.right = buildTree_help(preorder, inorderMap, root + 1 + i - left, i + 1, right);
+        return node;
+    }
+
+    /**
+     * 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+     * 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+     * 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        TreeNode cur = root;
+        //寻找前驱节点，把cur的right放到左子树的第一个最后一个right节点
+        while (cur != null) {
+            if (cur.left != null) {
+                TreeNode next = cur.left;
+                TreeNode predecessor = next;
+                while (predecessor.right != null) {
+                    predecessor = predecessor.right;
+                }
+                predecessor.right = cur.right;
+                cur.left = null;
+                cur.right = next;
+            }
+            cur = cur.right;
+        }
+    }
+
+    /**
+     * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+     * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+     * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+     * 输入：[7,1,5,3,6,4]
+     * 输出：5
+     * 解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     *      注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        int res = 0;
+        //记录最低价格
+        int minPrice = prices[0];
+        for (int price : prices) {
+            minPrice = Math.min(minPrice, price);
+            res = Math.max(res, price - minPrice);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.subsets(new int[]{1,2,3});
