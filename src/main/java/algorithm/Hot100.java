@@ -1043,8 +1043,108 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度。
+     * 请你设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     * 输入：nums = [100,4,200,1,3,2]
+     * 输出：4
+     * 解释：最长数字连续序列是 [1, 2, 3, 4]。它的长度为 4。
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        int res = 0;
+        for (int num : nums) {
+            set.add(num);
+        }
+        for (int num : nums) {
+            //如果是num - 1则会计算所有情况，如果是num + 1则会计算值最大的那个
+            if (!set.contains(num + 1)) {
+                int curNum = num;
+                int curLength = 1;
+                while (set.contains(curNum - 1)) {
+                    curNum--;
+                    curLength++;
+                }
+                res = Math.max(res, curLength);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个 非空 整数数组 nums ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+     * 你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。
+     * 输入：nums = [2,2,1]
+     * 输出：1
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        int res = 0;
+        for (int num : nums) {
+            res ^= num;
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     * 输入: s = "leetcode", wordDict = ["leet", "code"]
+     * 输出: true
+     * 解释: 返回 true 因为 "leetcode" 可以由 "leet" 和 "code" 拼接成。
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>(wordDict);
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                //截取字符串去判断
+                if (dp[j] && set.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+    /**
+     * 给你一个链表的头节点 head ，判断链表中是否有环。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，
+     * 评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况。
+     * 如果链表中存在环 ，则返回 true 。 否则，返回 false
+     * 输入：head = [3,2,0,-4], pos = 1
+     * 输出：true
+     * 解释：链表中有一个环，其尾部连接到第二个节点。
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (slow != fast) {
+            //快慢指针，如果遍历到null则为没有环
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.subsets(new int[]{1,2,3});
+        hot100.longestConsecutive(new int[]{100,4,200,1,3,2});
     }
 }
