@@ -1143,6 +1143,120 @@ public class Hot100 {
         return true;
     }
 
+    /**
+     * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。
+     * 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+     * 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+     * 不允许修改 链表。
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (true) {
+            if (fast == null || fast.next == null) {
+                return null;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+        fast = head;
+        while (fast != slow) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return fast;
+    }
+
+    /**
+     * 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+     * @param head
+     * @return
+     */
+    public ListNode sortList(ListNode head) {
+        sortList(head, null);
+        return null;
+    }
+
+    private ListNode sortList(ListNode head, ListNode tail) {
+        if (head == null) {
+            return null;
+        }
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast != tail) {
+                fast = fast.next;
+            }
+        }
+        ListNode mid = slow;
+        ListNode head1 = sortList(head, mid);
+        ListNode head2 = sortList(mid, tail);
+        ListNode sort = mergeList(head1, head2);
+        return sort;
+    }
+
+    private ListNode mergeList(ListNode head1, ListNode head2) {
+        ListNode node = new ListNode();
+        ListNode head = node;
+        while (head1 != null && head2 != null) {
+            if (head1.val > head2.val) {
+                head.next = new ListNode(head2.val);
+                head2 = head2.next;
+            } else {
+                head.next = new ListNode(head1.val);
+                head1 = head1.next;
+            }
+            head = head.next;
+        }
+        if (head1 != null) {
+            head.next = head1;
+        }
+        if (head2 != null) {
+            head.next = head2;
+        }
+        return node.next;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
+     * 测试用例的答案是一个 32-位 整数。
+     * 子数组 是数组的连续子序列
+     * 输入: nums = [2,3,-2,4]
+     * 输出: 6
+     * 解释: 子数组 [2,3] 有最大乘积 6。
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int res = nums[0];
+        int max = nums[0];
+        int min = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int maxTmp = max;
+            int minTmp = min;
+            //nums[i]可能是正的也可能是负的，所以要先计算maxTmp * nums[i], minTmp * nums[i]中最大的，再和自己做比较
+            max = Math.max(nums[i], Math.max(maxTmp * nums[i], minTmp * nums[i]));
+            min = Math.min(nums[i], Math.min(maxTmp * nums[i], minTmp * nums[i]));
+            res = Math.max(res, max);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.longestConsecutive(new int[]{100,4,200,1,3,2});
