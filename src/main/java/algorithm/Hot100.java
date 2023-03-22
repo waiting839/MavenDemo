@@ -1257,6 +1257,65 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode A = headA;
+        ListNode B = headB;
+        while (A != B) {
+            A = A == null ? headB : A.next;
+            B = B == null ? headA : B.next;
+        }
+        return A;
+    }
+
+    /**
+     * 给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+     * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int candidate = 0;
+        int sum = 0;
+        for (int num : nums) {
+            if (sum == 0) {
+                candidate = num;
+            }
+            sum += candidate == num ? 1 : -1;
+        }
+        return candidate;
+    }
+
+    /**
+     * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，
+     * 如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
+     * 输入：[1,2,3,1]
+     * 输出：4
+     * 解释：偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。
+     *      偷窃到的最高金额 = 1 + 3 = 4 。
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (i - 1 > 0) {
+                dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+            } else {
+                dp[i] = Math.max(dp[i - 1], nums[i]);
+            }
+        }
+        return dp[nums.length - 1];
+    }
+
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.longestConsecutive(new int[]{100,4,200,1,3,2});
