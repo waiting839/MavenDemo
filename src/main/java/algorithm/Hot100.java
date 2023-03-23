@@ -1315,6 +1315,109 @@ public class Hot100 {
         return dp[nums.length - 1];
     }
 
+    /**
+     * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
+     * 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+     * 此外，你可以假设该网格的四条边均被水包围。
+     * 输入：grid = [
+     *   ["1","1","0","0","0"],
+     *   ["1","1","0","0","0"],
+     *   ["0","0","1","0","0"],
+     *   ["0","0","0","1","1"]
+     * ]
+     * 输出：3
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    res++;
+                    numIslands_help(grid, i, j);
+                }
+            }
+        }
+        return res;
+    }
+
+    private void numIslands_help(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j > grid[0].length || grid[i][j] == '0') {
+            return;
+        }
+        grid[i][j] = '0';
+        numIslands_help(grid, i + 1, j);
+        numIslands_help(grid, i - 1, j);
+        numIslands_help(grid, i, j + 1);
+        numIslands_help(grid, i, j - 1);
+    }
+
+    /**
+     * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode tmp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = tmp;
+        }
+        return pre;
+    }
+
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     * 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题
+     * 输入: [3,2,1,5,6,4], k = 2
+     * 输出: 5
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        int target = nums.length - k;
+        int l = 0;
+        int r = nums.length - 1;
+        while (true) {
+            int index = findKthLargest_help(nums, l ,r);
+            if (index == target) {
+                return nums[index];
+            } else if (index > target) {
+                r = index - 1;
+            } else if (index < target) {
+                l = index + 1;
+            }
+        }
+    }
+
+    private int findKthLargest_help(int[] nums, int l, int r) {
+        int k = nums[l];
+        int i = l;
+        int j = r;
+        while (i < j) {
+            while (i < j && nums[j] >= k) {
+                j--;
+            }
+            while (i < j && nums[i] <= k) {
+                i++;
+            }
+            if (i < j) {
+                swap(nums, i , j);
+            }
+        }
+        nums[l] = nums[j];
+        nums[j] = k;
+        return j;
+    }
 
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
