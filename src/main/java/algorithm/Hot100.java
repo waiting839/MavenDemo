@@ -1,5 +1,7 @@
 package algorithm;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import java.util.*;
 
 /**
@@ -1417,6 +1419,104 @@ public class Hot100 {
         nums[l] = nums[j];
         nums[j] = k;
         return j;
+    }
+
+    /**
+     * 在一个由 '0' 和 '1' 组成的二维矩阵内，找到只包含 '1' 的最大正方形，并返回其面积。
+     * 输入：matrix =
+     * [["1","0","1","0","0"],
+     * ["1","0","1","1","1"],
+     * ["1","1","1","1","1"],
+     * ["1","0","0","1","0"]]
+     * 输出：4
+     * @param matrix
+     * @return
+     */
+    public int maximalSquare(char[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] dp = new int[m][n];
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '0') {
+                    continue;
+                } else {
+                    if (i == 0 || j == 0) {
+                        dp[i][j] = 1;
+                    } else {
+                        dp[i][j] = 1 + Math.min(Math.min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                    }
+                }
+                res = Math.max(res, dp[i][j]);
+            }
+        }
+        return res * res;
+    }
+
+    /**
+     * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        root.left = invertTree(right);
+        root.right = invertTree(left);
+        return root;
+    }
+
+    /**
+     * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false
+     * 输入：head = [1,2,2,1]
+     * 输出：true
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        Stack<Integer> stack = new Stack<>();
+        ListNode node = head;
+        while (node != null) {
+            stack.push(node.val);
+            node = node.next;
+        }
+        node = head;
+        while (node != null) {
+            if (node.val != stack.pop()) {
+                return false;
+            }
+        }
+        return true;
+        //可以使用快慢指针然后返回后半部分链表达到空间复杂度O(1)
+    }
+
+    /**
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，
+     * 最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        //往下寻找节点p和q，如果p和q在不同子树，则left和right都不为空，如果在同一个子树，则另一则会为空
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
     }
 
     public static void main(String[] args) {
