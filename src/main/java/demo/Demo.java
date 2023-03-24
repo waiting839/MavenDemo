@@ -667,10 +667,29 @@ public class Demo {
 //        System.out.println(integerList.get(1));
 //        System.out.println(intList.get(1));
 
-        int i = 1;
-        int a;
-        a = i++;
-        System.out.println(i + ":" + a);
+//        int i = 1;
+//        int a;
+//        a = i++;
+//        System.out.println(i + ":" + a);
 
+        CompletableFuture<Void> task1 = CompletableFuture.supplyAsync(() -> {
+            System.out.println("task1开始");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("task1结束");
+            return null;
+        }, ThreadPoolBuilder.getRightThreadPool());
+        CompletableFuture<Void> task2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println("task2开始");
+            String s = null;
+            s.split(",");
+            return null;
+        }, ThreadPoolBuilder.getRightThreadPool());
+        CompletableFuture<Void> future = CompletableFuture.allOf(task1, task2);
+        future.join();
+        System.out.println("主线程结束");
     }
 }
