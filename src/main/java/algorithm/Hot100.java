@@ -1519,8 +1519,164 @@ public class Hot100 {
         return root;
     }
 
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     * 输入: nums = [1,2,3,4]
+     * 输出: [24,12,8,6]
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int[] res = new int[nums.length];
+        int p = 1;
+        int q = 1;
+        //从左往右相乘，紧乘到自己下标前的
+        for (int i = 0; i < nums.length; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        //从右往左相乘，紧乘到自己下标后的
+        for (int i = nums.length - 1; i >= 0; i--) {
+            res[i] *= q;
+            q *= nums[i];
+        }
+        return res;
+    }
+
+    /**
+     * 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+     * 每行的元素从左到右升序排列。
+     * 每列的元素从上到下升序排列。
+     * 输入：matrix =
+     * [[1,4,7,11,15],
+     * [2,5,8,12,19],
+     * [3,6,9,16,22],
+     * [10,13,14,17,24],
+     * [18,21,23,26,30]], target = 5
+     * 输出：true
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length - 1;
+        int n = 0;
+        while (m >= 0 && n < matrix[0].length) {
+            if (target == matrix[m][n]) {
+                return true;
+            } else if (target > matrix[m][n]) {
+                n++;
+            } else if (target < matrix[m][n]) {
+                m--;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     * 输入：n = 12
+     * 输出：3
+     * 解释：12 = 4 + 4 + 4
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            //找j*j前一个最小数量的，找到后+1即可
+            for (int j = 1; j * j <= i; j++) {
+                min = Math.min(min, dp[i - j * j]);
+            }
+            dp[i] = min + 1;
+        }
+        return dp[n];
+    }
+
+    /**
+     * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     * 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+     * 输入: nums = [0,1,0,3,12]
+     * 输出: [1,3,12,0,0]
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        //p指向下标为0的，
+        //q去找下标不为0的
+        int p = 0;
+        int q = 0;
+        while (q < nums.length) {
+            if (nums[q] != 0) {
+                swap(nums, p, q);
+                p++;
+            }
+            q++;
+        }
+    }
+
+    /**
+     * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+     * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
+     * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
+     * 输入：nums = [1,3,4,2,2]
+     * 输出：2
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        //快慢指针，类似环形链表找到循环节点
+        int slow = nums[0];
+        int fast = nums[0];
+        while (true) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+            if (slow == fast) {
+                break;
+            }
+        }
+        fast = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+     * 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+     * 输入：nums = [10,9,2,5,3,7,101,18]
+     * 输出：4
+     * 解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        int res = 1;
+        dp[0] = 1;
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = 1;
+            //两重遍历，如果nums[i] > nums[j]则取dp[i]和dp[j] + 1 的最大值
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.longestConsecutive(new int[]{100,4,200,1,3,2});
+        hot100.productExceptSelf(new int[]{1,2,3,4});
     }
 }
