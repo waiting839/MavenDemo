@@ -1675,8 +1675,75 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给定一个整数数组prices，其中第  prices[i] 表示第 i 天的股票价格 。
+     * 设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+     * 卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。
+     * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+     * 输入: prices = [1,2,3,0,2]
+     * 输出: 3
+     * 解释: 对应的交易状态为: [买入, 卖出, 冷冻期, 买入, 卖出]
+     * @param prices
+     * @return
+     */
+    public int maxProfit2(int[] prices) {
+        // 代表持有股票
+        int p1 = -prices[0];
+        // 代表昨天卖出股票，在冷却期
+        int p2 = 0;
+        // 代表昨天之前卖出股票，不在冷却期
+        int p3 = 0;
+        for (int i = 1; i < prices.length; i++) {
+            int newp1 = Math.max(p1, p3 - prices[i]);
+            int newp2 = prices[i] + p1;
+            int newp3 = Math.max(p2, p3);
+            p1 = newp1;
+            p2 = newp2;
+            p3 = newp3;
+        }
+        return Math.max(p2, p3);
+    }
+
+    /**
+     * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+     * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+     * 你可以认为每种硬币的数量是无限的。
+     * 输入：coins = [1, 2, 5], amount = 11
+     * 输出：3
+     * 解释：11 = 5 + 5 + 1
+     * @param coins
+     * @param amount
+     * @return
+     */
+    public int coinChange(int[] coins, int amount) {
+        coinChange_help(coins, amount, new int[amount]);
+        return 0;
+    }
+
+    private int coinChange_help(int[] coins, int amount, int[] count) {
+        if (amount == 0) {
+            return 0;
+        }
+        if (amount < 0) {
+            return -1;
+        }
+        if (count[amount - 1] != 0) {
+            return count[amount - 1];
+        }
+        int res = Integer.MAX_VALUE;
+        for (int coin : coins) {
+           int sub = coinChange_help(coins, amount - coin, count);
+           if (sub == -1) {
+               continue;
+           }
+           res = Math.min(res, sub + 1);
+        }
+        count[amount - 1] = res == Integer.MAX_VALUE ? -1 : res;
+        return count[amount - 1];
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.productExceptSelf(new int[]{1,2,3,4});
+        hot100.coinChange(new int[]{1,2147483647}, 2);
     }
 }
