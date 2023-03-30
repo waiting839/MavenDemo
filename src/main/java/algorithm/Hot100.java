@@ -1742,6 +1742,91 @@ public class Hot100 {
         return count[amount - 1];
     }
 
+    /**
+     * 小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 root 。
+     * 除了 root 之外，每栋房子有且只有一个“父“房子与之相连。一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。
+     * 如果 两个直接相连的房子在同一天晚上被打劫 ，房屋将自动报警。
+     * 给定二叉树的 root 。返回 在不触动警报的情况下 ，小偷能够盗取的最高金额
+     * @param root
+     * @return
+     */
+    public int rob(TreeNode root) {
+        int[] res = rob_help(root);
+        return Math.max(res[0], res[1]);
+    }
+
+    private int[] rob_help(TreeNode root) {
+        if (root == null) {
+            return new int[]{0, 0};
+        }
+        //数组第一个表示选择了，第二个表示不选择
+        int[] left = rob_help(root.left);
+        int[] right = rob_help(root.right);
+        //选择当前节点则加上左右子树不选的值
+        int select = root.val + left[1] + right[1];
+        //不选择当前节点则取左右子树中选和不选中最大值
+        int notSelect = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        return new int[]{select, notSelect};
+    }
+
+    /**
+     * 给你一个整数 n ，对于 0 <= i <= n 中的每个 i ，计算其二进制表示中 1 的个数 ，返回一个长度为 n + 1 的数组 ans 作为答案。
+     * 输入：n = 2
+     * 输出：[0,1,1]
+     * 解释：
+     * 0 --> 0
+     * 1 --> 1
+     * 2 --> 10
+     * @param n
+     * @return
+     */
+    public int[] countBits(int n) {
+        int[] res = new int[n + 1];
+        res[0] = 0;
+        int highBit = 0;
+        for (int i = 1; i <= n; i++) {
+            //判断是否高位，例如3（11）的高位是2（10）
+            if ((i & (i - 1)) == 0) {
+                highBit = i;
+            }
+            //当前值就是高位前面的所有加上高位
+            res[i] = res[i - highBit] + 1;
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
+     * 输入: nums = [1,1,1,2,2,3], k = 2
+     * 输出: [1,2]
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        //使用最小堆
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (priorityQueue.size() < k) {
+                priorityQueue.add(new int[]{entry.getKey(), entry.getValue()});
+            } else {
+                if (priorityQueue.peek()[1] < entry.getValue()) {
+                    priorityQueue.poll();
+                    priorityQueue.add(new int[]{entry.getKey(), entry.getValue()});
+                }
+            }
+        }
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = priorityQueue.poll()[0];
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         hot100.coinChange(new int[]{1,2147483647}, 2);
