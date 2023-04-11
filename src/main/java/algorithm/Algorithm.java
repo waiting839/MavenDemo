@@ -4298,6 +4298,7 @@ public class Algorithm {
         for (int i = 0; i < n; i++) {
             dp[i][0] = true;
         }
+        dp[0][nums[0]] = true;
         //完全背包
         for (int i = 1; i < n; i++) {
             for (int j = 1; j <= target; j++) {

@@ -1827,8 +1827,93 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+     * 输入：nums = [1,5,11,5]
+     * 输出：true
+     * 解释：数组可以分割成 [1, 5, 5] 和 [11] 。
+     * @param nums
+     * @return
+     */
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        //少于两个数返回false
+        if (n < 2) {
+            return false;
+        }
+        int sum = 0;
+        int maxNum = 0;
+        for (int num : nums) {
+            sum += num;
+            maxNum = Math.max(maxNum, num);
+        }
+        //总和是奇数，返回false
+        if (sum % 2 == 1) {
+            return false;
+        }
+        int target = sum / 2;
+        //最大的那个数大于总和的一半，返回false
+        if (maxNum > target) {
+            return false;
+        }
+        boolean[][] dp = new boolean[n][target + 1];
+        //初始化target为0的情况，即不选任何数的情况下都是true
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = true;
+        }
+        //初始化第一个选的数，target为nums[0]时选他刚好等于，即为true
+        dp[0][nums[0]] = true;
+        //完全背包
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= target; j++) {
+                if (j >= nums[i]) {
+                    //j >= nums[i]即是可以选择nums[i]
+                    dp[i][j] = dp[i - 1][j] | dp[i][j - nums[i]];
+                } else {
+                    //不能选择的情况只能根据i - 1的情况顺延
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[n - 1][target];
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+     * 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public int pathSum(TreeNode root, int targetSum) {
+        Map<Long, Integer> prefix = new HashMap<>();
+        //自己一个节点刚好也是一条路径
+        prefix.put(0L, 1);
+        return pathSum_help(root, targetSum, 0L, prefix);
+    }
+
+    private int pathSum_help(TreeNode node, int targetSum, long cur, Map<Long, Integer> prefix) {
+        if (node == null) {
+            return 0;
+        }
+        cur += node.val;
+        //前缀和 - target如果有则说明刚好相等
+        int res = prefix.getOrDefault(cur - targetSum, 0);
+        //存储前缀和
+        prefix.put(cur, prefix.getOrDefault(cur, 0) + 1);
+        res += pathSum_help(node.left, targetSum, cur, prefix);
+        res += pathSum_help(node.right, targetSum, cur, prefix);
+        //回溯
+        prefix.put(cur, prefix.get(cur) - 1);
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        hot100.coinChange(new int[]{1,2147483647}, 2);
+        TreeNode root = new TreeNode(10);
+        root.left = new TreeNode(5);
+        root.left.left = new TreeNode(3);
+        root.left.left.left = new TreeNode(3);
+        System.out.println(hot100.pathSum(root, 8));
     }
 }

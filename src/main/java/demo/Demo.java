@@ -672,24 +672,30 @@ public class Demo {
 //        a = i++;
 //        System.out.println(i + ":" + a);
 
-        CompletableFuture<Void> task1 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("task1开始");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("task1结束");
-            return null;
-        }, ThreadPoolBuilder.getRightThreadPool());
-        CompletableFuture<Void> task2 = CompletableFuture.supplyAsync(() -> {
-            System.out.println("task2开始");
-            String s = null;
-            s.split(",");
-            return null;
-        }, ThreadPoolBuilder.getRightThreadPool());
-        CompletableFuture<Void> future = CompletableFuture.allOf(task1, task2);
-        future.join();
-        System.out.println("主线程结束");
+//        CompletableFuture<Void> task1 = CompletableFuture.supplyAsync(() -> {
+//            System.out.println("task1开始");
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println("task1结束");
+//            return null;
+//        }, ThreadPoolBuilder.getRightThreadPool());
+//        CompletableFuture<Void> task2 = CompletableFuture.supplyAsync(() -> {
+//            System.out.println("task2开始");
+//            String s = null;
+//            s.split(",");
+//            return null;
+//        }, ThreadPoolBuilder.getRightThreadPool());
+//        CompletableFuture<Void> future = CompletableFuture.allOf(task1, task2);
+//        future.join();
+//        System.out.println("主线程结束");
+
+        String s = "/formdesigner-web/generateForm.html?formId=83fb202e-f957-437c-8873-2071d0a7cd38&type=5";
+        int idx = s.indexOf("formId=");
+        System.out.println(idx);
+        String ss = s.substring(idx + 7, idx + 43);
+        System.out.println(ss);
     }
 }
