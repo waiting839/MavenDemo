@@ -1908,6 +1908,70 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+     * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+     * 输入: s = "cbaebabacd", p = "abc"
+     * 输出: [0,6]
+     * 解释:
+     * 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+     * 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+     * @param s
+     * @param p
+     * @return
+     */
+    public List<Integer> findAnagrams(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+        if (sLen < pLen) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        //使用滑动窗口
+        int[] sArr = new int[26];
+        int[] pArr = new int[26];
+        //先将p长度的字母写进两个数组，然后比较
+        for (int i = 0; i < pLen; i++) {
+            sArr[s.charAt(i) - 'a']++;
+            pArr[s.charAt(i) - 'a']++;
+        }
+        if (Arrays.equals(sArr, pArr)) {
+            res.add(0);
+        }
+        //从0开始删除sArr的值，向右滑动，一个一个判断
+        for (int i = 0; i < sLen - pLen; i++) {
+            sArr[s.charAt(i) - 'a']--;
+            sArr[s.charAt(i + pLen) - 'a']++;
+            if (Arrays.equals(sArr, pArr)) {
+                res.add(i + 1);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个含 n 个整数的数组 nums ，其中 nums[i] 在区间 [1, n] 内。请你找出所有在 [1, n] 范围内但没有出现在 nums 中的数字，
+     * 并以数组的形式返回结果。
+     * 输入：nums = [4,3,2,7,8,2,3,1]
+     * 输出：[5,6]
+     * @param nums
+     * @return
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n + 1];
+        List<Integer> res = new ArrayList<>();
+        for (int num : nums) {
+            dp[num]++;
+        }
+        for (int i = 1; i <= n; i++) {
+            if (dp[i] == 0) {
+                res.add(i);
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         TreeNode root = new TreeNode(10);
