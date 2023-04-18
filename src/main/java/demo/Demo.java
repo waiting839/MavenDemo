@@ -191,6 +191,11 @@ public class Demo {
         return IsUTF8;
     }
 
+    private Integer getInteger() {
+        Integer integer = new Integer(127);
+        return integer;
+    }
+
     public static void main(String[] args) throws Throwable {
 //        List<String> list = Arrays.asList("m,k,l,a", "1,3,5,7");
 //        System.out.println(list);
@@ -692,10 +697,15 @@ public class Demo {
 //        future.join();
 //        System.out.println("主线程结束");
 
-        String s = "/formdesigner-web/generateForm.html?formId=83fb202e-f957-437c-8873-2071d0a7cd38&type=5";
-        int idx = s.indexOf("formId=");
-        System.out.println(idx);
-        String ss = s.substring(idx + 7, idx + 43);
-        System.out.println(ss);
+//        String s = "/formdesigner-web/generateForm.html?formId=83fb202e-f957-437c-8873-2071d0a7cd38&type=5";
+//        int idx = s.indexOf("formId=");
+//        System.out.println(idx);
+//        String ss = s.substring(idx + 7, idx + 43);
+//        System.out.println(ss);
+
+
+        Demo demo = new Demo();
+        int i = demo.getInteger();
+        System.out.println(i);
     }
 }

@@ -1972,6 +1972,59 @@ public class Hot100 {
         return res;
     }
 
+    /**
+     * 两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+     * 给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+     * @param x
+     * @param y
+     * @return
+     */
+    public int hammingDistance(int x, int y) {
+        String str = String.valueOf(x ^ y);
+        int res = 0;
+        for (char c : str.toCharArray()) {
+            if (c == '1') {
+                res++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 target 。
+     * 向数组中的每个整数前添加 '+' 或 '-' ，然后串联起所有整数，可以构造一个 表达式 ：
+     * 例如，nums = [2, 1] ，可以在 2 之前添加 '+' ，在 1 之前添加 '-' ，然后串联起来得到表达式 "+2-1" 。
+     * 返回可以通过上述方法构造的、运算结果等于 target 的不同 表达式 的数目。
+     * 输入：nums = [1,1,1,1,1], target = 3
+     * 输出：5
+     * 解释：一共有 5 种方法让最终目标和为 3 。
+     * -1 + 1 + 1 + 1 + 1 = 3
+     * +1 - 1 + 1 + 1 + 1 = 3
+     * +1 + 1 - 1 + 1 + 1 = 3
+     * +1 + 1 + 1 - 1 + 1 = 3
+     * +1 + 1 + 1 + 1 - 1 = 3
+     * @param nums
+     * @param target
+     * @return
+     */
+    int findTargetSumWays_res = 0;
+    public int findTargetSumWays(int[] nums, int target) {
+        findTargetSumWays_help(nums, target, 0, 0);
+        return 0;
+    }
+
+    private void findTargetSumWays_help(int[] nums, int target, int sum, int index) {
+        if (index == nums.length) {
+            if (sum == target) {
+                findTargetSumWays_res++;
+                return;
+            }
+        } else {
+            findTargetSumWays_help(nums, target, sum + nums[index], index + 1);
+            findTargetSumWays_help(nums, target, sum - nums[index], index + 1);
+        }
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         TreeNode root = new TreeNode(10);
