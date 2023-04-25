@@ -2068,12 +2068,34 @@ public class Hot100 {
         return Math.max(left, right) + 1;
     }
 
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的连续子数组的个数 。
+     * 输入：nums = [1,1,1], k = 2
+     * 输出：2
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        int pre = 0;
+        //存取前缀和，key为前缀和的值，value是次数
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for (int i = 0; i < nums.length; i++) {
+            pre += nums[i];
+            if (map.containsKey(pre - k)) {
+                //例如[2,0,0,2]，当遍历到第四位时，map中有键值对{2,3}，说明可以有3对和为2的组合
+                count += map.get(pre - k);
+            }
+            map.put(pre, map.getOrDefault(pre, 0) + 1);
+        }
+        return count;
+    }
+
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        TreeNode root = new TreeNode(10);
-        root.left = new TreeNode(5);
-        root.left.left = new TreeNode(3);
-        root.left.left.left = new TreeNode(3);
-        System.out.println(hot100.pathSum(root, 8));
+        System.out.println(hot100.subarraySum(new int[]{2,0,0}, 2));
     }
 }
