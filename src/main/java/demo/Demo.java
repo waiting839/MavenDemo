@@ -20,6 +20,7 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 
 import com.google.common.collect.Lists;
+import feign.FeignException;
 
 /**
  * @author 作者 吴嘉烺
@@ -703,9 +704,21 @@ public class Demo {
 //        String ss = s.substring(idx + 7, idx + 43);
 //        System.out.println(ss);
 
+//
+//        Demo demo = new Demo();
+//        int i = demo.getInteger();
+//        System.out.println(i);
 
-        Demo demo = new Demo();
-        int i = demo.getInteger();
-        System.out.println(i);
+        List<Integer> list66 = new ArrayList<>();
+        list66.add(1);
+        list66.add(2);
+        list66.add(3);
+        list66.add(4);
+        list66.add(5);
+        list66.parallelStream().forEach(e -> {
+            if (e == 3) {
+                throw new FeignException.BadRequest("", null);
+            }
+        });
     }
 }
