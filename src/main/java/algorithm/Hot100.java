@@ -2149,6 +2149,61 @@ public class Hot100 {
         return root1;
     }
 
+    /**
+     * 给你一个用字符数组 tasks 表示的 CPU 需要执行的任务列表。其中每个字母表示一种不同种类的任务。任务可以以任意顺序执行，
+     * 并且每个任务都可以在 1 个单位时间内执行完。在任何一个单位时间，CPU 可以完成一个任务，或者处于待命状态。
+     * 然而，两个 相同种类 的任务之间必须有长度为整数 n 的冷却时间，因此至少有连续 n 个单位时间内 CPU 在执行不同的任务，或者在待命状态。
+     * 你需要计算完成所有任务所需要的 最短时间 。
+     * 输入：tasks = ["A","A","A","B","B","B"], n = 2
+     * 输出：8
+     * 解释：A -> B -> (待命) -> A -> B -> (待命) -> A -> B
+     *      在本示例中，两个相同类型任务之间必须间隔长度为 n = 2 的冷却时间，而执行一个任务只需要一个单位时间，所以中间出现了（待命）状态。
+     * @param tasks
+     * @param n
+     * @return
+     */
+    public int leastInterval(char[] tasks, int n) {
+        int[] arr = new int[26];
+        for (char c : tasks) {
+            arr[c - 'A']++;
+        }
+        Arrays.sort(arr);
+        //找出出现次数最多的进行插空
+        int minL = (arr[25] - 1) * (n + 1) + 1;
+        for (int i = 0; i < 25; i++) {
+            if (arr[i] == arr[25]) {
+                minL++;
+            }
+        }
+        //插空满了直接为tasks的长度即可
+        return Math.max(minL, tasks.length);
+    }
+
+    /**
+     * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+     * 回文字符串 是正着读和倒过来读一样的字符串。
+     * 子字符串 是字符串中的由连续字符组成的一个序列。
+     * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+     * 输入：s = "aaa"
+     * 输出：6
+     * 解释：6个回文子串: "a", "a", "a", "aa", "aa", "aaa"
+     * @param s
+     * @return
+     */
+    public int countSubstrings(String s) {
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = 0; j < 2; j++) {
+                int left = i;
+                int right = i + j;
+                while (left >= 0 && right < s.length() && s.charAt(left--) == s.charAt(right++)) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
         System.out.println(hot100.subarraySum(new int[]{2,0,0}, 2));
