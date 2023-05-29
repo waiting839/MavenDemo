@@ -709,16 +709,19 @@ public class Demo {
 //        int i = demo.getInteger();
 //        System.out.println(i);
 
-        List<Integer> list66 = new ArrayList<>();
-        list66.add(1);
-        list66.add(2);
-        list66.add(3);
-        list66.add(4);
-        list66.add(5);
-        list66.parallelStream().forEach(e -> {
-            if (e == 3) {
-                throw new FeignException.BadRequest("", null);
-            }
-        });
+//        List<Integer> list66 = new ArrayList<>();
+//        list66.add(1);
+//        list66.add(2);
+//        list66.add(3);
+//        list66.add(4);
+//        list66.add(5);
+//        list66.parallelStream().forEach(e -> {
+//            if (e == 3) {
+//                throw new FeignException.BadRequest("", null);
+//            }
+//        });
+
+        String s = "123456";
+        System.out.println(s.getBytes());
     }
 }
