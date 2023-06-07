@@ -21,6 +21,7 @@ import lombok.Data;
 
 import com.google.common.collect.Lists;
 import feign.FeignException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author 作者 吴嘉烺
@@ -723,5 +724,8 @@ public class Demo {
 
         String s = "123456";
         System.out.println(s.getBytes());
+
+        List<String> list33 = Arrays.asList("1", null, "2", null).stream().filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.toList());
+        System.out.println(list33);
     }
 }
