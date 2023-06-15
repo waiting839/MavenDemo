@@ -336,4 +336,67 @@ public class Array {
         }
         return new int[]{-1, -1};
     }
+
+    /**
+     * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+     * 请必须使用时间复杂度为 O(log n) 的算法。
+     * 输入: nums = [1,3,5,6], target = 5
+     * 输出: 2
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        int i = 0;
+        int j = nums.length - 1;
+        while (i <= j) {
+            int mid = i + (j - i) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] > target) {
+                j = mid - 1;
+            } else if (nums[mid] < target) {
+                i = mid + 1;
+            }
+        }
+        return i;
+    }
+
+    /**
+     * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，
+     * 并以列表形式返回。你可以按 任意顺序 返回这些组合。
+     * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
+     * 对于给定的输入，保证和为 target 的不同组合数少于 150 个。
+     * 输入：candidates = [2,3,6,7], target = 7
+     * 输出：[[2,2,3],[7]]
+     * 解释：
+     * 2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+     * 7 也是一个候选， 7 = 7 。
+     * 仅有这两种组合。
+     * @param candidates
+     * @param target
+     * @return
+     */
+    List<List<Integer>> combinationSum_res = new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        combinationSum_help(candidates, target, 0, new LinkedList<>(), 0);
+        return combinationSum_res;
+    }
+
+    private void combinationSum_help(int[] candidates, int target, int sum, LinkedList<Integer> path, int start) {
+        if (sum == target) {
+            combinationSum_res.add(new ArrayList<>(path));
+            return;
+        }
+        if (sum > target) {
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            path.add(candidates[i]);
+            sum += candidates[i];
+            combinationSum_help(candidates, target, sum, path, i);
+            path.removeLast();
+            sum -= candidates[i];
+        }
+    }
 }
