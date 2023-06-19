@@ -399,4 +399,80 @@ public class Array {
             sum -= candidates[i];
         }
     }
+
+    /**
+     * 给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合。
+     * candidates 中的每个数字在每个组合中只能使用 一次 。
+     * 注意：解集不能包含重复的组合。
+     * 输入: candidates = [10,1,2,7,6,1,5], target = 8,
+     * 输出:
+     * [
+     * [1,1,6],
+     * [1,2,5],
+     * [1,7],
+     * [2,6]
+     * ]
+     * @param candidates
+     * @param target
+     * @return
+     */
+    List<List<Integer>> combinationSum2_res = new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        combinationSum2_help(candidates, target, new LinkedList<>(), 0, 0);
+        return combinationSum2_res;
+    }
+
+    private void combinationSum2_help(int[] candidates, int target, LinkedList<Integer> path, int sum, int start) {
+        if (sum == target) {
+            combinationSum2_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < candidates.length && sum + candidates[i] <= target; i++) {
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            path.add(candidates[i]);
+            combinationSum2_help(candidates, target, path, sum + candidates[i], i + 1);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个长度为 n 的 0 索引整数数组 nums。初始位置为 nums[0]。
+     * 每个元素 nums[i] 表示从索引 i 向前跳转的最大长度。换句话说，如果你在 nums[i] 处，你可以跳转到任意 nums[i + j] 处:
+     * 0 <= j <= nums[i]
+     * i + j < n
+     * 返回到达 nums[n - 1] 的最小跳跃次数。生成的测试用例可以到达 nums[n - 1]。
+     * 输入: nums = [2,3,1,1,4]
+     * 输出: 2
+     * 解释: 跳到最后一个位置的最小跳跃数是 2。
+     *      从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        if (nums.length == 1) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        //寻找每个下标可到达的步数
+        for (int i = 0; i < nums.length; i++) {
+            //j <= nums[i]
+            for (int j = 1; j <= nums[i]; j++) {
+                //如果i + j已经大于等于数组长度，则直接取dp[i] + 1
+                if (i + j >= nums.length - 1) {
+                    return dp[i] + 1;
+                }
+                //如果当前下标没有跳到，则是上一个dp[i] + 1，如果有人到达，则维持原状
+                dp[i + j] = dp[i + j] == 0 ? dp[i] + 1 : dp[i + j];
+            }
+        }
+        return dp[nums.length - 1];
+    }
+
+    public static void main(String[] args) {
+        Array array = new Array();
+        array.combinationSum2(new int[]{10,1,2,7,6,1,5}, 8);
+    }
 }
