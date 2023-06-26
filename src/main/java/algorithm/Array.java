@@ -471,8 +471,71 @@ public class Array {
         return dp[nums.length - 1];
     }
 
+    /**
+     * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+     * 输入：nums = [1,2,3]
+     * 输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> permute_res = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        permute_help(nums, new LinkedList<>());
+        return permute_res;
+    }
+
+    private void permute_help(int[] nums, LinkedList<Integer> path) {
+        if (path.size() == nums.length) {
+            permute_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (path.contains(nums[i])) {
+                continue;
+            }
+            path.add(nums[i]);
+            permute_help(nums, path);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。
+     * 输入：nums = [1,1,2]
+     * 输出：
+     * [[1,1,2],
+     *  [1,2,1],
+     *  [2,1,1]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> permuteUnique_res = new ArrayList<>();
+    Set<Integer> permuteUnique_visit = new HashSet<>();
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        permuteUnique_help(nums, new LinkedList<>());
+        return permuteUnique_res;
+    }
+
+    private void permuteUnique_help(int[] nums, LinkedList<Integer> path) {
+        if (path.size() == nums.length) {
+            permuteUnique_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (permuteUnique_visit.contains(i) || (i > 0 && nums[i] == nums[i - 1] && !permuteUnique_visit.contains(i - 1))) {
+                continue;
+            }
+            path.add(nums[i]);
+            permuteUnique_visit.add(i);
+            permuteUnique_help(nums, path);
+            path.removeLast();
+            permuteUnique_visit.remove(i);
+        }
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
-        array.combinationSum2(new int[]{10,1,2,7,6,1,5}, 8);
+        array.permuteUnique(new int[]{1, 1, 3});
     }
 }
