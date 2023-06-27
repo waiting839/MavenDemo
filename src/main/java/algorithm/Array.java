@@ -534,6 +534,78 @@ public class Array {
         }
     }
 
+    /**
+     * 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+     * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像。
+     * 输入：matrix =
+     * [[1,2,3],
+     * [4,5,6],
+     * [7,8,9]]
+     * 输出：
+     * [[7,4,1],
+     * [8,5,2],
+     * [9,6,3]]
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = tmp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
+    }
+
+    /**
+     * 给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+     * 字母异位词 是由重新排列源单词的所有字母得到的一个新单词。
+     * 输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+     * 输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+     * @param strs
+     * @return
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> map = new HashMap<>();
+        List<List<String>> res = new ArrayList<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            List<String> list = map.getOrDefault(new String(chars), new ArrayList<>());
+            list.add(str);
+            map.put(new String(chars), list);
+        }
+        map.entrySet().forEach(e -> res.add(e.getValue()));
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * 子数组 是数组中的一个连续部分。
+     * 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+     * 输出：6
+     * 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int res = nums[0];
+        int sum = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            sum = Math.max(nums[i], sum + nums[i]);
+            res = Math.max(res, sum);
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
         array.permuteUnique(new int[]{1, 1, 3});
