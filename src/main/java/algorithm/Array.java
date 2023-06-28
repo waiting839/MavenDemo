@@ -606,8 +606,64 @@ public class Array {
         return res;
     }
 
+    /**
+     * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+     * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * 输出：[1,2,3,6,9,8,7,4,5]
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int up = 0;
+        int down = matrix.length - 1;
+        int left = 0;
+        int right = matrix[0].length - 1;
+        List<Integer> res = new ArrayList<>();
+        while (true) {
+            for (int i = left; i <= right; i++) {
+                res.add(matrix[up][i]);
+            }
+            up++;
+            if (up > down) {
+                break;
+            }
+            for (int i = up; i <= down; i++) {
+                res.add(matrix[i][right]);
+            }
+            right--;
+            if (left > right) {
+                break;
+            }
+            for (int i = right; i >= left; i--) {
+                res.add(matrix[down][i]);
+            }
+            down--;
+            if (up > down) {
+                break;
+            }
+            for (int i = down; i >= up; i--) {
+                res.add(matrix[i][left]);
+            }
+            left++;
+            if (left > right) {
+                break;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
-        array.permuteUnique(new int[]{1, 1, 3});
+        int[][] matrix = new int[3][3];
+        matrix[0][0] = 1;
+        matrix[0][1] = 2;
+        matrix[0][2] = 3;
+        matrix[1][0] = 4;
+        matrix[1][1] = 5;
+        matrix[1][2] = 6;
+        matrix[2][0] = 7;
+        matrix[2][1] = 8;
+        matrix[2][2] = 9;
+        array.spiralOrder(matrix);
     }
 }
