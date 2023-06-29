@@ -652,18 +652,97 @@ public class Array {
         return res;
     }
 
+    /**
+     * 给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+     * 数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 判断你是否能够到达最后一个下标。
+     * 输入：nums = [2,3,1,1,4]
+     * 输出：true
+     * 解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        int rightMax = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            //i <= rightMax，判断是否能跳到这里
+            if (i <= rightMax) {
+                rightMax = Math.max(rightMax, i + nums[i]);
+                if (rightMax >= n - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+     * 有效字符串需满足：
+     * 左括号必须用相同类型的右括号闭合。
+     * 左括号必须以正确的顺序闭合。
+     * 每个右括号都有一个对应的相同类型的左括号。
+     * 输入：s = "()[]{}"
+     * 输出：true
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+                continue;
+            }
+            if (stack.isEmpty()) {
+                return false;
+            }
+            if (c == ')' && stack.peek() == '(') {
+                stack.pop();
+            } else if (c == ']' && stack.peek() == '[') {
+                stack.pop();
+            } else if (c == '}' && stack.peek() == '{') {
+                stack.pop();
+            } else {
+                return false;
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     * 输入：n = 3
+     * 输出：["((()))","(()())","(())()","()(())","()()()"]
+     * @param n
+     * @return
+     */
+    List<String> generateParenthesis_res = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        generateParenthesis_help(n, new StringBuilder(), 0, 0);
+        return generateParenthesis_res;
+    }
+
+    private void generateParenthesis_help(int n, StringBuilder path, int left, int right) {
+        if (path.length() == n * 2) {
+            generateParenthesis_res.add(new String(path));
+            return;
+        }
+        if (left < n) {
+            path.append('(');
+            generateParenthesis_help(n, path, left + 1, right);
+            path.deleteCharAt(path.length() - 1);
+        }
+        if (left > right) {
+            path.append(')');
+            generateParenthesis_help(n, path, left, right + 1);
+            path.deleteCharAt(path.length() - 1);
+        }
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
-        int[][] matrix = new int[3][3];
-        matrix[0][0] = 1;
-        matrix[0][1] = 2;
-        matrix[0][2] = 3;
-        matrix[1][0] = 4;
-        matrix[1][1] = 5;
-        matrix[1][2] = 6;
-        matrix[2][0] = 7;
-        matrix[2][1] = 8;
-        matrix[2][2] = 9;
-        array.spiralOrder(matrix);
+        array.generateParenthesis(3);
     }
 }
