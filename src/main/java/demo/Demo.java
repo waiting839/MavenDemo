@@ -722,10 +722,16 @@ public class Demo {
 //            }
 //        });
 
-        String s = "123456";
-        System.out.println(s.getBytes());
+//        String s = "123456";
+//        System.out.println(s.getBytes());
+//
+//        List<String> list33 = Arrays.asList("1", null, "2", null).stream().filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.toList());
+//        System.out.println(list33);
 
-        List<String> list33 = Arrays.asList("1", null, "2", null).stream().filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.toList());
-        System.out.println(list33);
+        String[] all = new String[]{"1", "2"};
+        all = Arrays.copyOf(all, 4);
+        all[2] = "3";
+        String str = StringUtils.join(all, "::");
+        System.out.println(str);
     }
 }

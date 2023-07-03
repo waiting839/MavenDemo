@@ -741,6 +741,68 @@ public class Array {
         }
     }
 
+    /**
+     * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     * 输入: s = "abcabcbb"
+     * 输出: 3
+     * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0;
+        int tmp = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int j = map.getOrDefault(s.charAt(i), -1);
+            tmp = i - j > tmp ? tmp + 1 : i - j;
+            res = Math.max(res, tmp);
+            map.put(s.charAt(i), i);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个字符串 s，找到 s 中最长的回文子串。
+     * 如果字符串的反序与原始字符串相同，则该字符串称为回文字符串。
+     * 输入：s = "babad"
+     * 输出："bab"
+     * 解释："aba" 同样是符合题意的答案。
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+         int n = s.length();
+         int maxL = 1;
+         int begin = 0;
+         boolean[][] dp = new boolean[n][n];
+         for (int i = 0; i < n; i++) {
+             dp[i][i] = true;
+         }
+         for (int l = 2; l <= n; l++) {
+             for (int i = 0; i < n; i++) {
+                 int j = i + l - 1;
+                 if (j >= n) {
+                     break;
+                 }
+                 if (s.charAt(i) != s.charAt(j)) {
+                     dp[i][j] = false;
+                 } else {
+                     if (j - i < 3) {
+                         dp[i][j] = true;
+                     } else {
+                         dp[i][j] = dp[i + 1][j - 1];
+                     }
+                 }
+                 if (dp[i][j] && j - i + 1> maxL) {
+                     begin = i;
+                     maxL = j - i + 1;
+                 }
+             }
+         }
+        return s.substring(begin, begin + maxL);
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
         array.generateParenthesis(3);
