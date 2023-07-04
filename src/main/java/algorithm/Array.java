@@ -803,6 +803,71 @@ public class Array {
         return s.substring(begin, begin + maxL);
     }
 
+    /**
+     * 给你两个字符串 haystack 和 needle ，请你在 haystack 字符串中找出 needle 字符串的第一个匹配项的下标（下标从 0 开始）。
+     * 如果 needle 不是 haystack 的一部分，则返回  -1 。
+     * 输入：haystack = "sadbutsad", needle = "sad"
+     * 输出：0
+     * 解释："sad" 在下标 0 和 6 处匹配。
+     * 第一个匹配项的下标是 0 ，所以返回 0 。
+     * @param haystack
+     * @param needle
+     * @return
+     */
+    public int strStr(String haystack, String needle) {
+        for (int i = 0; i < haystack.length(); i++) {
+            if (haystack.charAt(i) != needle.charAt(0)) {
+                continue;
+            }
+            int m = i;
+            int n = 0;
+            while (m < haystack.length() && n < needle.length()) {
+                if (haystack.charAt(m++) != needle.charAt(n++)) {
+                    break;
+                }
+                if (n == needle.length()) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 给你一个字符串 s，由若干单词组成，单词前后用一些空格字符隔开。返回字符串中 最后一个 单词的长度。
+     * 单词 是指仅由字母组成、不包含任何空格字符的最大子字符串。
+     * 输入：s = "Hello World"
+     * 输出：5
+     * 解释：最后一个单词是“World”，长度为5。
+     * @param s
+     * @return
+     */
+    public int lengthOfLastWord(String s) {
+        int tmp = 0;
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                tmp = 0;
+                continue;
+            }
+            tmp++;
+            res = tmp;
+        }
+        return res;
+    }
+
+    /**
+     * 给你两个二进制字符串 a 和 b ，以二进制字符串的形式返回它们的和。
+     * 输入:a = "11", b = "1"
+     * 输出："100"
+     * @param a
+     * @param b
+     * @return
+     */
+    public String addBinary(String a, String b) {
+        return Integer.toBinaryString(Integer.parseInt(a, 2) + Integer.parseInt(b, 2));
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
         array.generateParenthesis(3);
