@@ -938,8 +938,82 @@ public class Array {
         return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
     }
 
+    /**
+     * 给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+     * 回文串 是正着读和反着读都一样的字符串。
+     * 输入：s = "aab"
+     * 输出：[["a","a","b"],["aa","b"]]
+     * @param s
+     * @return
+     */
+    List<List<String>> partition_res = new ArrayList<>();
+    public List<List<String>> partition(String s) {
+        partition_help(s, 0, new LinkedList<>(), 0);
+        return partition_res;
+    }
+
+    private void partition_help(String s, int start, LinkedList<String> path, int len) {
+        if (len == s.length()) {
+            partition_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            String str = s.substring(start, i + 1);
+            if (!isPalindromeStr(str)) {
+                continue;
+            }
+            len += i - start + 1;
+            path.add(str);
+            partition_help(s, i + 1, path, len);
+            len -= i - start + 1;
+            path.removeLast();
+        }
+    }
+
+    private boolean isPalindromeStr(String s) {
+        if (s == null || s.length() < 2) {
+            return true;
+        }
+        int left = 0;
+        int right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    /**
+     * 给你一个字符串 s ，请你反转字符串中 单词 的顺序。
+     * 单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。
+     * 返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。
+     * 注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，
+     * 单词间应当仅用单个空格分隔，且不包含任何额外的空格。
+     * 输入：s = "the sky is blue"
+     * 输出："blue is sky the"
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        String[] strings = s.split(" ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = strings.length - 1; i >= 0; i--) {
+            if (strings[i] == "") {
+                continue;
+            }
+            if (stringBuilder.length() != 0) {
+                stringBuilder.append(" ");
+            }
+            stringBuilder.append(strings[i]);
+        }
+        return stringBuilder.toString();
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
-        array.generateParenthesis(3);
+        array.partition("aaba");
     }
 }
