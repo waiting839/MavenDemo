@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 吴嘉烺
@@ -1012,8 +1013,46 @@ public class Array {
         return stringBuilder.toString();
     }
 
+    /**
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用
+     * 输入: s = "leetcode", wordDict = ["leet", "code"]
+     * 输出: true
+     * 解释: 返回 true 因为 "leetcode" 可以由 "leet" 和 "code" 拼接成。
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 给定一组非负整数 nums，重新排列每个数的顺序（每个数不可拆分）使之组成一个最大的整数。
+     * 注意：输出结果可能非常大，所以你需要返回一个字符串而不是整数。
+     * 输入：nums = [3,30,34,5,9]
+     * 输出："9534330"
+     * @param nums
+     * @return
+     */
+    public String largestNumber(int[] nums) {
+        String res = Arrays.stream(nums).boxed().map(String::valueOf).sorted((x, y) -> (y + x).compareTo(x + y)).collect(Collectors.joining(""));
+        return res.charAt(0) == '0' ? "0" : res;
+    }
+
     public static void main(String[] args) {
         Array array = new Array();
-        array.partition("aaba");
+        array.largestNumber(new int[]{3,30,34,5,9});
     }
 }
