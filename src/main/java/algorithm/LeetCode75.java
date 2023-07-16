@@ -140,8 +140,169 @@ public class LeetCode75 {
         return max >= n;
     }
 
+    /**
+     * 给你一个字符串 s ，仅反转字符串中的所有元音字母，并返回结果字符串。
+     * 元音字母包括 'a'、'e'、'i'、'o'、'u'，且可能以大小写两种形式出现不止一次。
+     * 输入：s = "hello"
+     * 输出："holle"
+     * @param s
+     * @return
+     */
+    public String reverseVowels(String s) {
+        char[] chars = s.toCharArray();
+        int i = 0;
+        int j = s.length() - 1;
+        while (i < j) {
+            while (i < s.length() - 1 &&!isVowels(chars[i])) {
+                i++;
+            }
+            while (j > 0 && !isVowels(chars[j])) {
+                j--;
+            }
+            if (i < j) {
+                char tmp = chars[i];
+                chars[i] = chars[j];
+                chars[j] = tmp;
+                i++;
+                j--;
+            }
+        }
+        return new String(chars);
+    }
+
+    private boolean isVowels(char c) {
+        return "aeiouAEIOU".indexOf(c) >= 0;
+    }
+
+    /**
+     * 给你一个字符串 s ，请你反转字符串中 单词 的顺序。
+     * 单词 是由非空格字符组成的字符串。s 中使用至少一个空格将字符串中的 单词 分隔开。
+     * 返回 单词 顺序颠倒且 单词 之间用单个空格连接的结果字符串。
+     * 注意：输入字符串 s中可能会存在前导空格、尾随空格或者单词间的多个空格。返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格。
+     * 输入：s = "the sky is blue"
+     * 输出："blue is sky the"
+     * @param s
+     * @return
+     */
+    public String reverseWords(String s) {
+        s = s.trim();
+        String[] strings = s.split(" ");
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = strings.length - 1; i >= 0; i--) {
+            if (strings[i].equals("")) {
+                continue;
+            }
+            stringBuilder.append(strings[i]).append(" ");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     * 输入: nums = [1,2,3,4]
+     * 输出: [24,12,8,6]
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int[] res = new int[nums.length];
+        int p = 1;
+        int q = 1;
+        for (int i = 0; i < nums.length; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            res[i] *= q;
+            q *= nums[i];
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，判断这个数组中是否存在长度为 3 的递增子序列。
+     * 如果存在这样的三元组下标 (i, j, k) 且满足 i < j < k ，使得 nums[i] < nums[j] < nums[k] ，返回 true ；否则，返回 false 。
+     * 输入：nums = [1,2,3,4,5]
+     * 输出：true
+     * 解释：任何 i < j < k 的三元组都满足题意
+     * @param nums
+     * @return
+     */
+    public boolean increasingTriplet(int[] nums) {
+        int n = nums.length;
+        if (n < 3) {
+            return false;
+        }
+        int first = nums[0];
+        int second = Integer.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
+            int num = nums[i];
+            if (num > second) {
+                return true;
+            } else if (num > first) {
+                second = num;
+            } else {
+                first = num;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给你一个字符数组 chars ，请使用下述算法压缩：
+     * 从一个空字符串 s 开始。对于 chars 中的每组 连续重复字符 ：
+     * 如果这一组长度为 1 ，则将字符追加到 s 中。
+     * 否则，需要向 s 追加字符，后跟这一组的长度。
+     * 压缩后得到的字符串 s 不应该直接返回 ，需要转储到字符数组 chars 中。需要注意的是，如果组长度为 10 或 10 以上，则在 chars 数组中会被拆分为多个字符。
+     * 请在 修改完输入数组后 ，返回该数组的新长度。
+     * 你必须设计并实现一个只使用常量额外空间的算法来解决此问题。
+     * 输入：chars = ["a","b","b","b","b","b","b","b","b","b","b","b","b"]
+     * 输出：返回 4 ，输入数组的前 4 个字符应该是：["a","b","1","2"]。
+     * 解释：由于字符 "a" 不重复，所以不会被压缩。"bbbbbbbbbbbb" 被 “b12” 替代。
+     * @param chars
+     * @return
+     */
+    public int compress(char[] chars) {
+        //记录修改的下标
+        int write = 0;
+        //记录不同字符的下标的起点
+        int left = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (i == chars.length - 1 || chars[i] != chars[i + 1]) {
+                chars[write] = chars[i];
+                write++;
+                //计算相同字符的长度
+                int num = i - left + 1;
+                if (num > 1) {
+                    int start = write;
+                    while (num > 0) {
+                        chars[write] = (char) (num % 10 + '0');
+                        write++;
+                        num /= 10;
+                    }
+                    reverse(chars, start, write - 1);
+                }
+                left = i + 1;
+            }
+        }
+        return write;
+    }
+
+    public void reverse(char[] chars, int left, int right) {
+        while (left < right) {
+            char temp = chars[left];
+            chars[left] = chars[right];
+            chars[right] = temp;
+            left++;
+            right--;
+        }
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        leetCode75.canPlaceFlowers(new int[]{1, 0, 0, 0, 1, 0, 0}, 2);
+        leetCode75.reverseWords(" example   good a  ");
     }
 }
