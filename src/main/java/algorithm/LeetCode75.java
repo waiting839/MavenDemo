@@ -1,6 +1,7 @@
 package algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -301,8 +302,116 @@ public class LeetCode75 {
         }
     }
 
+    /**
+     * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     * 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+     * 输入: nums = [0,1,0,3,12]
+     * 输出: [1,3,12,0,0]
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        int j = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                int tmp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = tmp;
+                j++;
+            }
+        }
+    }
+
+    /**
+     * 给定字符串 s 和 t ，判断 s 是否为 t 的子序列。
+     * 字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。（
+     * 例如，"ace"是"abcde"的一个子序列，而"aec"不是）。
+     * 进阶：
+     * 如果有大量输入的 S，称作 S1, S2, ... , Sk 其中 k >= 10亿，你需要依次检查它们是否为 T 的子序列。在这种情况下，你会怎样改变代码？
+     * 输入：s = "abc", t = "ahbgdc"
+     * 输出：true
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubsequence(String s, String t) {
+        if (s.length() == 0) {
+            return true;
+        }
+        int i = 0;
+        int j = 0;
+        while (j < t.length()) {
+            if (s.charAt(i) == t.charAt(j)) {
+                i++;
+                if (i == s.length()) {
+                    return true;
+                }
+            }
+            j++;
+        }
+        return false;
+    }
+
+    /**
+     * 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+     * 找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+     * 返回容器可以储存的最大水量。
+     * 说明：你不能倾斜容器。
+     * 输入：[1,8,6,2,5,4,8,3,7]
+     * 输出：49
+     * 解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        int res = 0;
+        int l = 0;
+        int r = height.length - 1;
+        while (l < r) {
+            res = Math.max(res, Math.min(height[l], height[r]) * (r - l));
+            if (height[l] > height[r]) {
+                r--;
+            } else {
+                l++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k 。
+     * 每一步操作中，你需要从数组中选出和为 k 的两个整数，并将它们移出数组。
+     * 返回你可以对数组执行的最大操作数。
+     * 输入：nums = [1,2,3,4], k = 5
+     * 输出：2
+     * 解释：开始时 nums = [1,2,3,4]：
+     * - 移出 1 和 4 ，之后 nums = [2,3]
+     * - 移出 2 和 3 ，之后 nums = []
+     * 不再有和为 5 的数对，因此最多执行 2 次操作。
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int maxOperations(int[] nums, int k) {
+        Arrays.sort(nums);
+        int i = 0;
+        int j = nums.length - 1;
+        int res = 0;
+        while (i < j) {
+            if (k - nums[j] == nums[i]) {
+                res++;
+                i++;
+                j--;
+            } else if (k - nums[j] > nums[i]) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        leetCode75.reverseWords(" example   good a  ");
+        leetCode75.moveZeroes(new int[]{0,1,0,3,12});
     }
 }
