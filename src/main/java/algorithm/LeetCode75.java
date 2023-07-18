@@ -1,8 +1,6 @@
 package algorithm;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author 吴嘉烺
@@ -406,6 +404,126 @@ public class LeetCode75 {
             } else {
                 j--;
             }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k 。
+     * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数。
+     * 任何误差小于 10^-5 的答案都将被视为正确答案。
+     * 输入：nums = [1,12,-5,-6,50,3], k = 4
+     * 输出：12.75
+     * 解释：最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+     * @param nums
+     * @param k
+     * @return
+     */
+    public double findMaxAverage(int[] nums, int k) {
+        double sum = 0;
+        for (int i = 0; i < k; i++) {
+            sum += nums[i];
+        }
+        double maxSum = sum;
+        for (int i = k; i < nums.length; i++) {
+            sum -= nums[i - k];
+            sum += nums[i];
+            maxSum = Math.max(maxSum, sum);
+        }
+        return maxSum / k;
+    }
+
+    /**
+     * 给你字符串 s 和整数 k 。
+     * 请返回字符串 s 中长度为 k 的单个子字符串中可能包含的最大元音字母数。
+     * 英文中的 元音字母 为（a, e, i, o, u）。
+     * 输入：s = "abciiidef", k = 3
+     * 输出：3
+     * 解释：子字符串 "iii" 包含 3 个元音字母。
+     * @param s
+     * @param k
+     * @return
+     */
+    public int maxVowels(String s, int k) {
+        char[] chars = s.toCharArray();
+        int sum = 0;
+        for (int i = 0; i < k; i++) {
+            if (isVowels(chars[i])) {
+                sum++;
+            }
+        }
+        if (sum == k) {
+            return sum;
+        }
+        int res = sum;
+        for (int i = k; i < s.length(); i++) {
+            if (isVowels(chars[i - k])) {
+                sum--;
+            }
+            if (isVowels(chars[i])) {
+                sum++;
+            }
+            if (sum == k) {
+                return sum;
+            }
+            res = Math.max(res, sum);
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个二进制数组 nums 和一个整数 k，如果可以翻转最多 k 个 0 ，则返回 数组中连续 1 的最大个数 。
+     * 输入：nums = [1,1,1,0,0,0,1,1,1,1,0], K = 2
+     * 输出：6
+     * 解释：[1,1,1,0,0,1,1,1,1,1,1]
+     * 粗体数字从 0 翻转到 1，最长的子数组长度为 6。
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int longestOnes(int[] nums, int k) {
+        int left = 0;
+        //左下标之前0的个数
+        int lSum = 0;
+        //右下标之前0的个数
+        int rSum = 0;
+        int res = 0;
+        for (int right = 0; right < nums.length; right++) {
+            rSum += 1 - nums[right];
+            //保证区间[left, right]之间的0个数小于等于k即可
+            while (lSum < rSum - k) {
+                lSum += 1 - nums[left];
+                left++;
+            }
+            res = Math.max(res, right - left + 1);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个二进制数组 nums ，你需要从中删掉一个元素。
+     * 请你在删掉元素的结果数组中，返回最长的且只包含 1 的非空子数组的长度。
+     * 如果不存在这样的子数组，请返回 0
+     * 输入：nums = [1,1,0,1]
+     * 输出：3
+     * 解释：删掉位置 2 的数后，[1,1,1] 包含 3 个 1 。
+     * @param nums
+     * @return
+     */
+    public int longestSubarray(int[] nums) {
+        int left = 0;
+        //左下标之前0的个数
+        int lSum = 0;
+        //右下标之前0的个数
+        int rSum = 0;
+        int res = 0;
+        for (int right = 0; right < nums.length; right++) {
+            rSum += 1 - nums[right];
+            while (lSum < rSum - 1) {
+                lSum += 1 - nums[left];
+                left++;
+            }
+            res = Math.max(res, right - left);
         }
         return res;
     }
