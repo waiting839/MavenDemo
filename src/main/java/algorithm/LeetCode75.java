@@ -528,6 +528,119 @@ public class LeetCode75 {
         return res;
     }
 
+    /**
+     * 有一个自行车手打算进行一场公路骑行，这条路线总共由 n + 1 个不同海拔的点组成。自行车手从海拔为 0 的点 0 开始骑行。
+     * 给你一个长度为 n 的整数数组 gain ，其中 gain[i] 是点 i 和点 i + 1 的 净海拔高度差（0 <= i < n）。请你返回 最高点的海拔 。
+     * 输入：gain = [-5,1,5,0,-7]
+     * 输出：1
+     * 解释：海拔高度依次为 [0,-5,-4,1,1,-6] 。最高海拔为 1 。
+     * @param gain
+     * @return
+     */
+    public int largestAltitude(int[] gain) {
+        int res = 0;
+        int cur = 0;
+        for (int num : gain) {
+            cur += num;
+            res = Math.max(res, cur);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请计算数组的 中心下标 。
+     * 数组 中心下标 是数组的一个下标，其左侧所有元素相加的和等于右侧所有元素相加的和。
+     * 如果中心下标位于数组最左端，那么左侧数之和视为 0 ，因为在下标的左侧不存在元素。这一点对于中心下标位于数组最右端同样适用。
+     * 如果数组有多个中心下标，应该返回 最靠近左边 的那一个。如果数组不存在中心下标，返回 -1 。
+     * 输入：nums = [1, 7, 3, 6, 5, 6]
+     * 输出：3
+     * 解释：
+     * 中心下标是 3 。
+     * 左侧数之和 sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11 ，
+     * 右侧数之和 sum = nums[4] + nums[5] = 5 + 6 = 11 ，二者相等。
+     * @param nums
+     * @return
+     */
+    public int pivotIndex(int[] nums) {
+        int lSum = 0;
+        int rSum = 0;
+        for (int i = 1; i < nums.length; i++) {
+            rSum += nums[i];
+        }
+        if (lSum == rSum) {
+            return 0;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            lSum += nums[i - 1];
+            rSum -= nums[i];
+            if (lSum == rSum) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * 给你两个下标从 0 开始的整数数组 nums1 和 nums2 ，请你返回一个长度为 2 的列表 answer ，其中：
+     * answer[0] 是 nums1 中所有 不 存在于 nums2 中的 不同 整数组成的列表。
+     * answer[1] 是 nums2 中所有 不 存在于 nums1 中的 不同 整数组成的列表。
+     * 注意：列表中的整数可以按 任意 顺序返回。
+     * 输入：nums1 = [1,2,3], nums2 = [2,4,6]
+     * 输出：[[1,3],[4,6]]
+     * 解释：
+     * 对于 nums1 ，nums1[1] = 2 出现在 nums2 中下标 0 处，然而 nums1[0] = 1 和 nums1[2] = 3 没有出现在 nums2 中。因此，answer[0] = [1,3]。
+     * 对于 nums2 ，nums2[0] = 2 出现在 nums1 中下标 1 处，然而 nums2[1] = 4 和 nums2[2] = 6 没有出现在 nums2 中。因此，answer[1] = [4,6]。
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public List<List<Integer>> findDifference(int[] nums1, int[] nums2) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path1 = new ArrayList<>();
+        List<Integer> path2 = new ArrayList<>();
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        for (int num : nums1) {
+            set1.add(num);
+        }
+        for (int num : nums2) {
+            set2.add(num);
+        }
+        for (int num : set1) {
+            if (!set2.contains(num)) {
+                path1.add(num);
+            }
+        }
+        for (int num : set2) {
+            if (!set1.contains(num)) {
+                path2.add(num);
+            }
+        }
+        res.add(path1);
+        res.add(path2);
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 arr，请你帮忙统计数组中每个数的出现次数。
+     * 如果每个数的出现次数都是独一无二的，就返回 true；否则返回 false。
+     * 输入：arr = [1,2,2,1,1,3]
+     * 输出：true
+     * 解释：在该数组中，1 出现了 3 次，2 出现了 2 次，3 只出现了 1 次。没有两个数的出现次数相同。
+     * @param arr
+     * @return
+     */
+    public boolean uniqueOccurrences(int[] arr) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : arr) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        Set<Integer> set = new HashSet<>();
+        map.forEach((k, v) -> set.add(v));
+        return set.size() == map.size();
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.moveZeroes(new int[]{0,1,0,3,12});

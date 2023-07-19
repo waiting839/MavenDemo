@@ -734,7 +734,15 @@ public class Demo {
 //        String str = StringUtils.join(all, "::");
 //        System.out.println(str);
 
-        String s = "A man, a plan, a canal: Panama";
-        System.out.println(s.toLowerCase());
+//        String s = "A man, a plan, a canal: Panama";
+//        System.out.println(s.toLowerCase());
+
+        List<Integer> o1 = new ArrayList<>();
+        o1.add(1);
+        o1.add(2);
+        List<Integer> o2 = o1.stream().filter(e -> e == 1).collect(Collectors.toList());
+        o2.add(3);
+        o2.add(4);
+        System.out.println(o1.size() + " " + o2.size());
     }
 }
