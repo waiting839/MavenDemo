@@ -1,5 +1,7 @@
 package algorithm;
 
+import com.google.common.primitives.Chars;
+
 import java.util.*;
 
 /**
@@ -639,6 +641,161 @@ public class LeetCode75 {
         Set<Integer> set = new HashSet<>();
         map.forEach((k, v) -> set.add(v));
         return set.size() == map.size();
+    }
+
+    /**
+     * 如果可以使用以下操作从一个字符串得到另一个字符串，则认为两个字符串 接近 ：
+     * 操作 1：交换任意两个 现有 字符。
+     * 例如，abcde -> aecdb
+     * 操作 2：将一个 现有 字符的每次出现转换为另一个 现有 字符，并对另一个字符执行相同的操作。
+     * 例如，aacabb -> bbcbaa（所有 a 转化为 b ，而所有的 b 转换为 a ）
+     * 你可以根据需要对任意一个字符串多次使用这两种操作。
+     * 给你两个字符串，word1 和 word2 。如果 word1 和 word2 接近 ，就返回 true ；否则，返回 false 。
+     * 输入：word1 = "abc", word2 = "bca"
+     * 输出：true
+     * 解释：2 次操作从 word1 获得 word2 。
+     * 执行操作 1："abc" -> "acb"
+     * 执行操作 1："acb" -> "bca"
+     * @param word1
+     * @param word2
+     * @return
+     */
+    public boolean closeStrings(String word1, String word2) {
+        if (word1.length() != word2.length()) {
+            return false;
+        }
+        int n = word1.length();
+        int[] int1 = new int[26];
+        int[] int2 = new int[26];
+        for (int i = 0; i < n; i++) {
+            int1[word1.charAt(i) - 'a']++;
+            int2[word2.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < int1.length; i++) {
+            if (int1[i] == 0 && int2[i] > 0) {
+                return false;
+            }
+            if (int2[i] == 0 && int1[i] > 0) {
+                return false;
+            }
+        }
+        Arrays.sort(int1);
+        Arrays.sort(int2);
+        for (int i = 0; i < int1.length; i++) {
+            if (int1[i] != int2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 给你一个下标从 0 开始、大小为 n x n 的整数矩阵 grid ，返回满足 Ri 行和 Cj 列相等的行列对 (Ri, Cj) 的数目。
+     * 如果行和列以相同的顺序包含相同的元素（即相等的数组），则认为二者是相等的。
+     * 输入：grid = [[3,2,1],[1,7,6],[2,7,7]]
+     * 输出：1
+     * 解释：存在一对相等行列对：
+     * - (第 2 行，第 1 列)：[2,7,7]
+     * @param grid
+     * @return
+     */
+    public int equalPairs(int[][] grid) {
+        int res = 0;
+        Map<String, Integer> row = new HashMap<>();
+        Map<String, Integer> col = new HashMap<>();
+        int n = grid.length;
+        for (int i = 0; i < n; i++) {
+            StringBuilder rowStr = new StringBuilder();
+            StringBuilder colStr = new StringBuilder();
+            for (int j = 0; j < n; j++) {
+                rowStr.append(grid[i][j]).append(",");
+                colStr.append(grid[j][i]).append(",");
+            }
+            row.put(rowStr.toString(), row.getOrDefault(rowStr.toString(), 0) + 1);
+            col.put(colStr.toString(), col.getOrDefault(colStr.toString(), 0) + 1);
+        }
+        for (Map.Entry e : row.entrySet()) {
+            res += (int) e.getValue() * col.getOrDefault(e.getKey(), 0);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个包含若干星号 * 的字符串 s 。
+     * 在一步操作中，你可以：
+     * 选中 s 中的一个星号。
+     * 移除星号 左侧 最近的那个 非星号 字符，并移除该星号自身。
+     * 返回移除 所有 星号之后的字符串。
+     * 注意：
+     * 生成的输入保证总是可以执行题面中描述的操作。
+     * 可以证明结果字符串是唯一的。
+     * 输入：s = "leet**cod*e"
+     * 输出："lecoe"
+     * 解释：从左到右执行移除操作：
+     * - 距离第 1 个星号最近的字符是 "leet**cod*e" 中的 't' ，s 变为 "lee*cod*e" 。
+     * - 距离第 2 个星号最近的字符是 "lee*cod*e" 中的 'e' ，s 变为 "lecod*e" 。
+     * - 距离第 3 个星号最近的字符是 "lecod*e" 中的 'd' ，s 变为 "lecoe" 。
+     * 不存在其他星号，返回 "lecoe" 。
+     * @param s
+     * @return
+     */
+    public String removeStars(String s) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Deque<Character> deque = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == '*') {
+                deque.pop();
+            } else {
+                deque.push(c);
+            }
+        }
+        while (!deque.isEmpty()) {
+            stringBuilder.append(deque.pollLast());
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 给定一个整数数组 asteroids，表示在同一行的行星。
+     * 对于数组中的每一个元素，其绝对值表示行星的大小，正负表示行星的移动方向（正表示向右移动，负表示向左移动）。每一颗行星以相同的速度移动。
+     * 找出碰撞后剩下的所有行星。碰撞规则：两个行星相互碰撞，较小的行星会爆炸。如果两颗行星大小相同，则两颗行星都会爆炸。
+     * 两颗移动方向相同的行星，永远不会发生碰撞。
+     * 输入：asteroids = [5,10,-5]
+     * 输出：[5,10]
+     * 解释：10 和 -5 碰撞后只剩下 10 。 5 和 10 永远不会发生碰撞。
+     * @param asteroids
+     * @return
+     */
+    public int[] asteroidCollision(int[] asteroids) {
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int num : asteroids) {
+            boolean boom = false;
+            if (!deque.isEmpty() && (deque.peekFirst() > 0 && num < 0)) {
+                while (!deque.isEmpty() && (deque.peekFirst() > 0 && num < 0)) {
+                    if (deque.peekFirst() == -num) {
+                        deque.pollFirst();
+                        boom = true;
+                        break;
+                    } else if (deque.peekFirst() < -num) {
+                        deque.pollFirst();
+                    } else if (deque.peekFirst() > -num) {
+                        boom = true;
+                        break;
+                    }
+                }
+                if (!boom) {
+                    deque.push(num);
+                }
+            } else {
+                deque.push(num);
+            }
+        }
+        int[] res = new int[deque.size()];
+        int n = deque.size();
+        for (int i = 0; i < n; i++) {
+            res[i] = deque.pollLast();
+        }
+        return res;
     }
 
     public static void main(String[] args) {

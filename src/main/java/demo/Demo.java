@@ -737,12 +737,23 @@ public class Demo {
 //        String s = "A man, a plan, a canal: Panama";
 //        System.out.println(s.toLowerCase());
 
-        List<Integer> o1 = new ArrayList<>();
-        o1.add(1);
-        o1.add(2);
-        List<Integer> o2 = o1.stream().filter(e -> e == 1).collect(Collectors.toList());
-        o2.add(3);
-        o2.add(4);
-        System.out.println(o1.size() + " " + o2.size());
+//        List<Integer> o1 = new ArrayList<>();
+//        o1.add(1);
+//        o1.add(2);
+//        List<Integer> o2 = o1.stream().filter(e -> e == 1).collect(Collectors.toList());
+//        o2.add(3);
+//        o2.add(4);
+//        System.out.println(o1.size() + " " + o2.size());
+
+        System.out.println("开始前");
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000L);
+                System.out.println(Thread.currentThread() + " 正在运行中");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        System.out.println("结束");
     }
 }
