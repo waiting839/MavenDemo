@@ -798,6 +798,51 @@ public class LeetCode75 {
         return res;
     }
 
+    /**
+     * 给定一个经过编码的字符串，返回它解码后的字符串。
+     * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+     * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+     * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+     * 输入：s = "3[a]2[bc]"
+     * 输出："aaabcbc"
+     * 输入：s = "3[a2[c]]"
+     * 输出："accaccacc"
+     * @param s
+     * @return
+     */
+    public String decodeString(String s) {
+        //存储[]前面的字符
+        Stack<String> stack = new Stack<>();
+        //存储次数
+        Stack<Integer> k = new Stack<>();
+        //存储[]里面的字符
+        StringBuilder res = new StringBuilder();
+        int m = 0;
+        for (char c : s.toCharArray()) {
+            if ('[' == c) {
+                //遇到[先把[前面的字符放到栈
+                stack.push(res.toString());
+                k.push(m);
+                m = 0;
+                res = new StringBuilder();
+            } else if (']' == c) {
+                int tmpK = k.pop();
+                //遇到]从res里面获取[]的数据
+                StringBuilder tmp = new StringBuilder();
+                for (int i = 0; i < tmpK; i++) {
+                    tmp.append(res);
+                }
+                //res再一次变成外面那层[]的数据
+                res = new StringBuilder(stack.pop() + tmp);
+            } else if (c >= '0' && c <= '9') {
+                m = 10 * m + Integer.parseInt(c + "");
+            } else {
+                res.append(c);
+            }
+        }
+        return res.toString();
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.moveZeroes(new int[]{0,1,0,3,12});
