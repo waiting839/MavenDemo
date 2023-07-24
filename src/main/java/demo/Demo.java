@@ -564,14 +564,14 @@ public class Demo {
 //        threadPoolExecutor.shutdown();
 
 
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("1");
-        list.add("1");
-        list.add("1");
-        list.add("1");
-        list.add("1");
-        list.add("1");
+//        List<String> list = new ArrayList<>();
+//        list.add("1");
+//        list.add("1");
+//        list.add("1");
+//        list.add("1");
+//        list.add("1");
+//        list.add("1");
+//        list.add("1");
 //        list.parallelStream().forEach(e -> {
 //            try {
 //                Thread.sleep(1000);
@@ -745,15 +745,18 @@ public class Demo {
 //        o2.add(4);
 //        System.out.println(o1.size() + " " + o2.size());
 
-        System.out.println("开始前");
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000L);
-                System.out.println(Thread.currentThread() + " 正在运行中");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        System.out.println("结束");
+//        System.out.println("开始前");
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(1000L);
+//                System.out.println(Thread.currentThread() + " 正在运行中");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//        System.out.println("结束");
+
+        Student student = new Student();
+        System.out.println(student.getAge() == 1);
     }
 }

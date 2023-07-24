@@ -843,6 +843,144 @@ public class LeetCode75 {
         return res.toString();
     }
 
+    /**
+     * 写一个 RecentCounter 类来计算特定时间范围内最近的请求。
+     * 请你实现 RecentCounter 类：
+     * RecentCounter() 初始化计数器，请求数为 0 。
+     * int ping(int t) 在时间 t 添加一个新请求，其中 t 表示以毫秒为单位的某个时间，
+     * 并返回过去 3000 毫秒内发生的所有请求数（包括新请求）。确切地说，返回在 [t-3000, t] 内发生的请求数。
+     * 保证 每次对 ping 的调用都使用比之前更大的 t 值。
+     * 输入：
+     * ["RecentCounter", "ping", "ping", "ping", "ping"]
+     * [[], [1], [100], [3001], [3002]]
+     * 输出：
+     * [null, 1, 2, 3, 3]
+     *
+     * 解释：
+     * RecentCounter recentCounter = new RecentCounter();
+     * recentCounter.ping(1);     // requests = [1]，范围是 [-2999,1]，返回 1
+     * recentCounter.ping(100);   // requests = [1, 100]，范围是 [-2900,100]，返回 2
+     * recentCounter.ping(3001);  // requests = [1, 100, 3001]，范围是 [1,3001]，返回 3
+     * recentCounter.ping(3002);  // requests = [1, 100, 3001, 3002]，范围是 [2,3002]，返回 3
+     */
+    class RecentCounter {
+
+        private Queue<Integer> queue;
+        public RecentCounter() {
+            queue = new ArrayDeque<>();
+        }
+
+        public int ping(int t) {
+            queue.add(t);
+            while (!queue.isEmpty() && queue.peek() < t - 3000) {
+                queue.poll();
+            }
+            return queue.size();
+        }
+    }
+
+    /**
+     * Dota2 的世界里有两个阵营：Radiant（天辉）和 Dire（夜魇）
+     * Dota2 参议院由来自两派的参议员组成。现在参议院希望对一个 Dota2 游戏里的改变作出决定。
+     * 他们以一个基于轮为过程的投票进行。在每一轮中，每一位参议员都可以行使两项权利中的 一 项：
+     * 禁止一名参议员的权利：参议员可以让另一位参议员在这一轮和随后的几轮中丧失 所有的权利 。
+     * 宣布胜利：如果参议员发现有权利投票的参议员都是 同一个阵营的 ，他可以宣布胜利并决定在游戏中的有关变化。
+     * 给你一个字符串 senate 代表每个参议员的阵营。字母 'R' 和 'D'分别代表了 Radiant（天辉）和 Dire（夜魇）。
+     * 然后，如果有 n 个参议员，给定字符串的大小将是 n。
+     * 以轮为基础的过程从给定顺序的第一个参议员开始到最后一个参议员结束。这一过程将持续到投票结束。所有失去权利的参议员将在过程中被跳过。
+     * 假设每一位参议员都足够聪明，会为自己的政党做出最好的策略，你需要预测哪一方最终会宣布胜利并在 Dota2 游戏中决定改变。
+     * 输出应该是 "Radiant" 或 "Dire" 。
+     * 输入：senate = "RD"
+     * 输出："Radiant"
+     * 解释：
+     * 第 1 轮时，第一个参议员来自 Radiant 阵营，他可以使用第一项权利让第二个参议员失去所有权利。
+     * 这一轮中，第二个参议员将会被跳过，因为他的权利被禁止了。
+     * 第 2 轮时，第一个参议员可以宣布胜利，因为他是唯一一个有投票权的人。
+     * @param senate
+     * @return
+     */
+    public String predictPartyVictory(String senate) {
+        //记录天辉和夜魇参议员的下标
+        Queue<Integer> radiant = new ArrayDeque<>();
+        Queue<Integer> dire = new ArrayDeque<>();
+        int n = senate.length();
+        for (int i = 0; i < n; i++) {
+            if (senate.charAt(i) == 'R') {
+                radiant.offer(i);
+            } else {
+                dire.offer(i);
+            }
+        }
+        while (!radiant.isEmpty() && !dire.isEmpty()) {
+            int radiantNum = radiant.poll();
+            int direNum = dire.poll();
+            //下标越小越靠前，越有权利禁用下标大的敌方，
+            // 然后长度 + n进入下一轮，如果小于n可能会出现同一轮禁用两次的情况
+            if (radiantNum < direNum) {
+                radiant.offer(radiantNum + n);
+            } else {
+                dire.offer(direNum + n);
+            }
+        }
+        return !radiant.isEmpty() ? "Radiant" : "Dire";
+    }
+
+    /**
+     * 给你一个链表的头节点 head 。删除 链表的 中间节点 ，并返回修改后的链表的头节点 head 。
+     * 长度为 n 链表的中间节点是从头数起第 ⌊n / 2⌋ 个节点（下标从 0 开始），其中 ⌊x⌋ 表示小于或等于 x 的最大整数。
+     * 对于 n = 1、2、3、4 和 5 的情况，中间节点的下标分别是 0、1、1、2 和 2 。
+     * 输入：head = [1,3,4,7,1,2,6]
+     * 输出：[1,3,4,1,2,6]
+     * 解释：
+     * 上图表示给出的链表。节点的下标分别标注在每个节点的下方。
+     * 由于 n = 7 ，值为 7 的节点 3 是中间节点，用红色标注。
+     * 返回结果为移除节点后的新链表。
+     * @param head
+     * @return
+     */
+    public ListNode deleteMiddle(ListNode head) {
+        //快慢指针，再使用一个哨兵节点
+        ListNode pre = new ListNode();
+        pre.next = head;
+        ListNode slow = pre;
+        ListNode fast = pre.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow.next = slow.next.next;
+        return pre.next;
+    }
+
+    /**
+     * 给定单链表的头节点 head ，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表。
+     * 第一个节点的索引被认为是 奇数 ， 第二个节点的索引为 偶数 ，以此类推。
+     * 请注意，偶数组和奇数组内部的相对顺序应该与输入时保持一致。
+     * 你必须在 O(1) 的额外空间复杂度和 O(n) 的时间复杂度下解决这个问题。
+     * 输入: head = [1,2,3,4,5]
+     * 输出: [1,3,5,2,4]
+     * @param head
+     * @return
+     */
+    public ListNode oddEvenList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        //奇数指针
+        ListNode slow = head;
+        //偶数指针
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            ListNode tmp = slow.next;
+            slow.next = fast.next;
+            fast.next = fast.next.next;
+            slow = slow.next;
+            slow.next = tmp;
+            fast = fast.next;
+        }
+        return head;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.moveZeroes(new int[]{0,1,0,3,12});
