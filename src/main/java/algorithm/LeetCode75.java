@@ -981,6 +981,121 @@ public class LeetCode75 {
         return head;
     }
 
+    /**
+     * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode tmp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = tmp;
+        }
+        return pre;
+    }
+
+    /**
+     * 在一个大小为 n 且 n 为 偶数 的链表中，对于 0 <= i <= (n / 2) - 1 的 i ，第 i 个节点（下标从 0 开始）的孪生节点为第 (n-1-i) 个节点 。
+     * 比方说，n = 4 那么节点 0 是节点 3 的孪生节点，节点 1 是节点 2 的孪生节点。这是长度为 n = 4 的链表中所有的孪生节点。
+     * 孪生和 定义为一个节点和它孪生节点两者值之和。
+     * 给你一个长度为偶数的链表的头节点 head ，请你返回链表的 最大孪生和 。
+     * 输入：head = [5,4,2,1]
+     * 输出：6
+     * 解释：
+     * 节点 0 和节点 1 分别是节点 3 和 2 的孪生节点。孪生和都为 6 。
+     * 链表中没有其他孪生节点。
+     * 所以，链表的最大孪生和是 6 。
+     * @param head
+     * @return
+     */
+    public int pairSum(ListNode head) {
+        int n = 0;
+        ListNode pre = new ListNode(0, head);
+        ListNode slow = pre;
+        ListNode fast = pre.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            n++;
+        }
+        int[] sum = new int[n];
+        fast = slow.next;
+        slow = head;
+        for (int i = 0; i < n; i++) {
+            sum[i] += slow.val;
+            sum[n - i - 1] += fast.val;
+            slow = slow.next;
+            fast = fast.next;
+        }
+        int res = sum[0];
+        for (int i = 1; i < n ;i++) {
+            if (sum[i] > res) {
+                res = sum[i];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个二叉树，找出其最大深度。
+     * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+     * 说明: 叶子节点是指没有子节点的节点。
+     * 示例：
+     * 给定二叉树 [3,9,20,null,null,15,7]，
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+
+    /**
+     * 请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列 。
+     * 举个例子，如上图所示，给定一棵叶值序列为 (6, 7, 4, 9, 8) 的树。
+     * 如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的。
+     * 如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。
+     * @param root1
+     * @param root2
+     * @return
+     */
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        List<Integer> list1 = new ArrayList<>();
+        List<Integer> list2 = new ArrayList<>();
+        leafSimilar_help(root1, list1);
+        leafSimilar_help(root2, list2);
+        if (list1.size() != list2.size()) {
+            return false;
+        }
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void leafSimilar_help(TreeNode node, List<Integer> list) {
+        if (node == null) {
+            return;
+        }
+        if (node.left == null && node.right == null) {
+            list.add(node.val);
+            return;
+        }
+        leafSimilar_help(node.left, list);
+        leafSimilar_help(node.right, list);
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.moveZeroes(new int[]{0,1,0,3,12});
