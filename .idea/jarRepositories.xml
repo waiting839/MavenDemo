@@ -9,6 +9,11 @@
     <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
+      <option name="url" value="http://192.168.10.29:8081/nexus/repository/rdc-maven-dev/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
       <option name="url" value="http://192.168.10.220:8085/nexus/repository/maven-public/" />
     </remote-repository>
     <remote-repository>

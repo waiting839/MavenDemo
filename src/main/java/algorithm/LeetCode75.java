@@ -1096,6 +1096,137 @@ public class LeetCode75 {
         leafSimilar_help(node.right, list);
     }
 
+    /**
+     * 给你一棵根为 root 的二叉树，请你返回二叉树中好节点的数目。
+     * 「好节点」X 定义为：从根到该节点 X 所经过的节点中，没有任何节点的值大于 X 的值。
+     * 输入：root = [3,1,4,3,null,1,5]
+     * 输出：4
+     * 解释：图中蓝色节点为好节点。
+     * 根节点 (3) 永远是个好节点。
+     * 节点 4 -> (3,4) 是路径中的最大值。
+     * 节点 5 -> (3,4,5) 是路径中的最大值。
+     * 节点 3 -> (3,1,3) 是路径中的最大值。
+     * @param root
+     * @return
+     */
+    int goodNodes_res = 0;
+    public int goodNodes(TreeNode root) {
+        goodNodes_help(root, Integer.MIN_VALUE);
+        return goodNodes_res;
+    }
+
+    private void goodNodes_help(TreeNode root, int max) {
+        if (root == null) {
+            return;
+        }
+        if (root.val >= max) {
+            goodNodes_res++;
+            max = root.val;
+        }
+        goodNodes_help(root.left, max);
+        goodNodes_help(root.right, max);
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+     * 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+     * 输入：root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+     * 输出：3
+     * 解释：和等于 8 的路径有 3 条，如图所示。
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public int pathSum(TreeNode root, int targetSum) {
+        Map<Long, Integer> prefix = new HashMap<>();
+        prefix.put(0L, 1);
+        return pathSum_help(root, targetSum, 0L, prefix);
+    }
+
+    private int pathSum_help(TreeNode root, int targetSum, Long cur, Map<Long, Integer> prefix) {
+        if (root == null) {
+            return 0;
+        }
+        cur += root.val;
+        //前缀和 - targetSum如果出现在Map中，证明路径上可以组合出等于target
+        int res = prefix.getOrDefault(cur - targetSum, 0);
+        //可能出现相同的前缀和
+        prefix.put(cur, prefix.getOrDefault(cur, 0) + 1);
+        res += pathSum_help(root.left, targetSum, cur, prefix);
+        res += pathSum_help(root.right, targetSum, cur, prefix);
+        prefix.put(cur, prefix.get(cur) - 1);
+        return res;
+    }
+
+    /**
+     * 给你一棵以 root 为根的二叉树，二叉树中的交错路径定义如下：
+     * 选择二叉树中 任意 节点和一个方向（左或者右）。
+     * 如果前进方向为右，那么移动到当前节点的的右子节点，否则移动到它的左子节点。
+     * 改变前进方向：左变右或者右变左。
+     * 重复第二步和第三步，直到你在树中无法继续移动。
+     * 交错路径的长度定义为：访问过的节点数目 - 1（单个节点的路径长度为 0 ）。
+     * 请你返回给定树中最长 交错路径 的长度。
+     * 输入：root = [1,null,1,1,1,null,null,1,1,null,1,null,null,null,1,null,1]
+     * 输出：3
+     * 解释：蓝色节点为树中最长交错路径（右 -> 左 -> 右）。
+     * @param root
+     * @return
+     */
+    int longestZigZag_res = 0;
+    public int longestZigZag(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        longestZigZag_help(root, 0, true);
+        longestZigZag_help(root, 0, false);
+        return longestZigZag_res;
+    }
+
+    private void longestZigZag_help(TreeNode root, int sum, boolean dir) {
+        longestZigZag_res = Math.max(longestZigZag_res, sum);
+        //true为要向左走，false为要向右走
+        if (dir) {
+            if (root.left != null) {
+                longestZigZag_help(root.left, sum + 1, false);
+            }
+            if (root.right != null) {
+                //true为要向左走，如果走右边则重置sum为1
+                longestZigZag_help(root.right, 1, true);
+            }
+        } else {
+            if (root.left != null) {
+                longestZigZag_help(root.left, 1, false);
+            }
+            if (root.right != null) {
+                longestZigZag_help(root.right, sum + 1, true);
+            }
+        }
+    }
+
+    /**
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，
+     * 最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.moveZeroes(new int[]{0,1,0,3,12});
