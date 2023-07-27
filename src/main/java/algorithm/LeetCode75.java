@@ -1227,8 +1227,121 @@ public class LeetCode75 {
         return root;
     }
 
+    /**
+     * 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            res.add(queue.peek().val);
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root。设根节点位于二叉树的第 1 层，而根节点的子节点位于第 2 层，依此类推。
+     * 请返回层内元素之和 最大 的那几层（可能只有一层）的层号，并返回其中 最小 的那个。
+     * 输入：root = [1,7,0,7,-8,null,null]
+     * 输出：2
+     * 解释：
+     * 第 1 层各元素之和为 1，
+     * 第 2 层各元素之和为 7 + 0 = 7，
+     * 第 3 层各元素之和为 7 + -8 = -1，
+     * 所以我们返回第 2 层的层号，它的层内元素之和最大。
+     * @param root
+     * @return
+     */
+    public int maxLevelSum(TreeNode root) {
+        int res = 0;
+        int max = Integer.MIN_VALUE;
+        int dep = 0;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            dep++;
+            int size = queue.size();
+            int sum = 0;
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sum += node.val;
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            if (sum > max) {
+                res = dep;
+                max = sum;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给定二叉搜索树（BST）的根节点 root 和一个整数值 val。
+     * 你需要在 BST 中找到节点值等于 val 的节点。 返回以该节点为根的子树。 如果节点不存在，则返回 null 。
+     * @param root
+     * @param val
+     * @return
+     */
+    public TreeNode searchBST(TreeNode root, int val) {
+        while (root != null) {
+            if (root.val == val) {
+                return root;
+            } else if (root.val < val) {
+                root = root.right;
+            } else if (root.val > val) {
+                root = root.left;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 给定一个二叉搜索树的根节点 root 和一个值 key，删除二叉搜索树中的 key 对应的节点，
+     * 并保证二叉搜索树的性质不变。返回二叉搜索树（有可能被更新）的根节点的引用。
+     * 一般来说，删除节点可分为两个步骤：
+     * 首先找到需要删除的节点；
+     * 如果找到了，删除它。
+     * @param root
+     * @param key
+     * @return
+     */
+    public TreeNode deleteNode(TreeNode root, int key) {
+        //TODO
+        return null;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        leetCode75.moveZeroes(new int[]{0,1,0,3,12});
+        TreeNode node = new TreeNode(1);
+        TreeNode node1 = new TreeNode(7);
+        TreeNode node2 = new TreeNode(0);
+        TreeNode node3 = new TreeNode(7);
+        TreeNode node4 = new TreeNode(-8);
+        node.left = node1;
+        node.right = node2;
+        node1.left = node3;
+        node1.right = node4;
+        leetCode75.maxLevelSum(node);
     }
 }

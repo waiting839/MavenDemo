@@ -2,6 +2,7 @@ package demo;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -756,7 +757,11 @@ public class Demo {
 //        }).start();
 //        System.out.println("结束");
 
-        Student student = new Student();
-        System.out.println(student.getAge() == 1);
+//        Student student = new Student();
+//        System.out.println(student.getAge() == 1);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        Long l = 1690387200000L;
+        Date date=new Date(l);
+        System.out.println(simpleDateFormat.format(date));
     }
 }
