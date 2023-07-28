@@ -1331,6 +1331,75 @@ public class LeetCode75 {
         return null;
     }
 
+    /**
+     * 有 n 个房间，房间按从 0 到 n - 1 编号。最初，除 0 号房间外的其余所有房间都被锁住。
+     * 你的目标是进入所有的房间。然而，你不能在没有获得钥匙的时候进入锁住的房间。
+     * 当你进入一个房间，你可能会在里面找到一套不同的钥匙，每把钥匙上都有对应的房间号，即表示钥匙可以打开的房间。你可以拿上所有钥匙去解锁其他房间。
+     * 给你一个数组 rooms 其中 rooms[i] 是你进入 i 号房间可以获得的钥匙集合。如果能进入 所有 房间返回 true，否则返回 false。
+     * 输入：rooms = [[1],[2],[3],[]]
+     * 输出：true
+     * 解释：
+     * 我们从 0 号房间开始，拿到钥匙 1。
+     * 之后我们去 1 号房间，拿到钥匙 2。
+     * 然后我们去 2 号房间，拿到钥匙 3。
+     * 最后我们去了 3 号房间。
+     * 由于我们能够进入每个房间，我们返回 true。
+     * [[6,7,8],[5,4,9],[],[8],[4],[],[1,9,2,3],[7],[6,5],[2,3,1]]
+     * @param rooms
+     * @return
+     */
+    boolean[] canVisitAllRooms_dp;
+    int canVisitAllRooms_res = 0;
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        int n = rooms.size();
+        canVisitAllRooms_dp = new boolean[n];
+        canVisitAllRooms_help(rooms, 0);
+        return canVisitAllRooms_res == n;
+    }
+
+    private void canVisitAllRooms_help(List<List<Integer>> rooms, int index) {
+        canVisitAllRooms_dp[index] = true;
+        canVisitAllRooms_res++;
+        for (int i : rooms.get(index)) {
+            if (!canVisitAllRooms_dp[i]) {
+                canVisitAllRooms_help(rooms, i);
+            }
+        }
+    }
+
+    /**
+     * 有 n 个城市，其中一些彼此相连，另一些没有相连。如果城市 a 与城市 b 直接相连，且城市 b 与城市 c 直接相连，那么城市 a 与城市 c 间接相连。
+     * 省份 是一组直接或间接相连的城市，组内不含其他没有相连的城市。
+     * 给你一个 n x n 的矩阵 isConnected ，其中 isConnected[i][j] = 1 表示第 i 个城市和第 j 个城市直接相连，
+     * 而 isConnected[i][j] = 0 表示二者不直接相连。
+     * 返回矩阵中 省份 的数量。
+     * 输入：isConnected = [[1,1,0],[1,1,0],[0,0,1]]
+     * 输出：2
+     * @param isConnected
+     * @return
+     */
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected.length;
+        boolean[] visited = new boolean[n];
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                findCircleNum_help(isConnected, visited, n, i);
+                res++;
+            }
+        }
+        return res;
+    }
+
+    private void findCircleNum_help(int[][] isConnected, boolean[] visited, int n , int i) {
+        for (int j = 0; j < n; j++) {
+            if (isConnected[i][j] == 1 && !visited[j]) {
+                visited[j] = true;
+                findCircleNum_help(isConnected, visited, n, j);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         TreeNode node = new TreeNode(1);
