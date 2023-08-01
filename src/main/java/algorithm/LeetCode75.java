@@ -1504,8 +1504,88 @@ public class LeetCode75 {
         return res - 1 < 0 ? 0 : res - 1;
     }
 
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     * 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     * 输入: [3,2,1,5,6,4], k = 2
+     * 输出: 5
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        return findKthLargest_help(nums, k, 0, nums.length - 1);
+    }
+
+    private int findKthLargest_help(int[] nums, int k, int l, int r) {
+        int i = l;
+        int j = r;
+        while (i < j) {
+            //从右往左查找第一个比nums[l]小的数，所以要用等号
+            while (i < j && nums[j] >= nums[l]) {
+                j--;
+            }
+            //从左往右查找第一个比nums[l]大的数
+            while (i < j && nums[i] <= nums[l]) {
+                i++;
+            }
+            swap(nums, i, j);
+        }
+        //交换基准数
+        swap(nums, l, i);
+        //比较基准数下标与第K个数，小于则在后半查找
+        if (i < nums.length - k) {
+            return findKthLargest_help(nums, k, i + 1, r);
+        }
+        if (i > nums.length - k) {
+            return findKthLargest_help(nums, k, l, i - 1);
+        }
+        return nums[nums.length - k];
+    }
+
+    /**
+     * 猜数字游戏的规则如下：
+     * 每轮游戏，我都会从 1 到 n 随机选择一个数字。 请你猜选出的是哪个数字。
+     * 如果你猜错了，我会告诉你，你猜测的数字比我选出的数字是大了还是小了。
+     * 你可以通过调用一个预先定义好的接口 int guess(int num) 来获取猜测结果，返回值一共有 3 种可能的情况（-1，1 或 0）：
+     * -1：我选出的数字比你猜的数字小 pick < num
+     * 1：我选出的数字比你猜的数字大 pick > num
+     * 0：我选出的数字和你猜的数字一样。恭喜！你猜对了！pick == num
+     * 返回我选出的数字。
+     * 输入：n = 10, pick = 6
+     * 输出：6
+     * @param n
+     * @return
+     */
+    public int guessNumber(int n) {
+        int l = 1;
+        int r = n;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (guess(mid) == 0) {
+                return mid;
+            } else if (guess(mid) > 0) {
+                l = mid + 1;
+            } else if (guess(mid) < 0) {
+                r = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    private int guess(int num) {
+        return 0;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.orangesRotting(new int[][]{{2, 1, 1}, {1, 1, 0}, {0, 1, 1}});
+    }
+
+    private void swap(int[] nums, int i, int j){
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 }
