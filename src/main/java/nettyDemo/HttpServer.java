@@ -31,11 +31,23 @@ public class HttpServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
+//                            ch.pipeline()
+//                                    .addLast("codec", new HttpServerCodec())
+//                                    .addLast("compressor", new HttpContentCompressor())
+//                                    .addLast("aggregator", new HttpObjectAggregator(65536))
+//                                    .addLast("handler", new HttpServerHandler());
                             ch.pipeline()
                                     .addLast("codec", new HttpServerCodec())
                                     .addLast("compressor", new HttpContentCompressor())
                                     .addLast("aggregator", new HttpObjectAggregator(65536))
-                                    .addLast("handler", new HttpServerHandler());
+                                    .addLast(new SampleInBoundHandler("SampleInBoundHandlerA", false))
+                                    .addLast(new SampleInBoundHandler("SampleInBoundHandlerB", false))
+                                    .addLast(new SampleInBoundHandler("SampleInBoundHandlerC", true))
+                                    .addLast(new ExceptionHandler());
+                            ch.pipeline()
+                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerA", true))
+                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerB", false))
+                                    .addLast(new SampleOutBoundHandler("SampleOutBoundHandlerC", false));
                         }
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);

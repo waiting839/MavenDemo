@@ -1400,17 +1400,112 @@ public class LeetCode75 {
         }
     }
 
+    /**
+     * 给你一个 m x n 的迷宫矩阵 maze （下标从 0 开始），矩阵中有空格子（用 '.' 表示）和墙（用 '+' 表示）。
+     * 同时给你迷宫的入口 entrance ，用 entrance = [entrancerow, entrancecol] 表示你一开始所在格子的行和列。
+     * 每一步操作，你可以往 上，下，左 或者 右 移动一个格子。你不能进入墙所在的格子，你也不能离开迷宫。
+     * 你的目标是找到离 entrance 最近 的出口。出口 的含义是 maze 边界 上的 空格子。entrance 格子 不算 出口。
+     * 请你返回从 entrance 到最近出口的最短路径的 步数 ，如果不存在这样的路径，请你返回 -1 。
+     * 输入：maze = [["+","+",".","+"],[".",".",".","+"],["+","+","+","."]], entrance = [1,2]
+     * 输出：1
+     * 解释：总共有 3 个出口，分别位于 (1,0)，(0,2) 和 (2,3) 。
+     * 一开始，你在入口格子 (1,2) 处。
+     * - 你可以往左移动 2 步到达 (1,0) 。
+     * - 你可以往上移动 1 步到达 (0,2) 。
+     * 从入口处没法到达 (2,3) 。
+     * 所以，最近的出口是 (0,2) ，距离为 1 步。
+     * @param maze
+     * @param entrance
+     * @return
+     */
+    public int nearestExit(char[][] maze, int[] entrance) {
+        int m = maze.length;
+        int n = maze[0].length;
+        //存储上下左右移动
+        int[][] move = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        //广度优先遍历使用队列
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.add(entrance);
+        boolean[][] visited = new boolean[m][n];
+        visited[entrance[0]][entrance[1]] = true;
+        int res = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int k = 0; k < size; k++) {
+                int[] tmp = queue.poll();
+                for (int i = 0; i < 4; i++) {
+                    int x = tmp[0] + move[i][0];
+                    int y = tmp[1] + move[i][1];
+                    //如果x或者y越界，说明tmp的下标已经到了边缘
+                    if (x < 0 || x >= m || y < 0 || y >= n) {
+                        //只要tmp中的下标任意一个不等于起点就是到了出口
+                        if (entrance[0] != tmp[0] || entrance[1] != tmp[1]) {
+                            return res;
+                        }
+                    } else if (!visited[x][y] && maze[x][y] == '.') {
+                        //未访问过的进入队列
+                        queue.offer(new int[]{x, y});
+                        visited[x][y] = true;
+                    }
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
+
+    /**
+     * 在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一：
+     * 值 0 代表空单元格；
+     * 值 1 代表新鲜橘子；
+     * 值 2 代表腐烂的橘子。
+     * 每分钟，腐烂的橘子 周围 4 个方向上相邻 的新鲜橘子都会腐烂。
+     * 返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
+     * 输入：grid = [[2,1,1],[1,1,0],[0,1,1]]
+     * 输出：4
+     * @param grid
+     * @return
+     */
+    public int orangesRotting(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] move = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int res = 0;
+        Queue<int[]> queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j});
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int k = 0; k < size; k++) {
+                int[] tmp = queue.poll();
+                for (int i = 0; i < 4; i++) {
+                    int x = tmp[0] + move[i][0];
+                    int y = tmp[1] + move[i][1];
+                    if (x >= 0 && x < m && y >= 0 && y < n && grid[x][y] == 1) {
+                        queue.offer(new int[]{x, y});
+                        grid[x][y] = 2;
+                    }
+                }
+            }
+            res++;
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    return -1;
+                }
+            }
+        }
+        return res - 1 < 0 ? 0 : res - 1;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        TreeNode node = new TreeNode(1);
-        TreeNode node1 = new TreeNode(7);
-        TreeNode node2 = new TreeNode(0);
-        TreeNode node3 = new TreeNode(7);
-        TreeNode node4 = new TreeNode(-8);
-        node.left = node1;
-        node.right = node2;
-        node1.left = node3;
-        node1.right = node4;
-        leetCode75.maxLevelSum(node);
+        leetCode75.orangesRotting(new int[][]{{2, 1, 1}, {1, 1, 0}, {0, 1, 1}});
     }
 }
