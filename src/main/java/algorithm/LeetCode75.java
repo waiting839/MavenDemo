@@ -1578,9 +1578,111 @@ public class LeetCode75 {
         return 0;
     }
 
+    /**
+     * 给你两个正整数数组 spells 和 potions ，长度分别为 n 和 m ，其中 spells[i] 表示第 i 个咒语的能量强度，potions[j] 表示第 j 瓶药水的能量强度。
+     * 同时给你一个整数 success 。一个咒语和药水的能量强度 相乘 如果 大于等于 success ，那么它们视为一对 成功 的组合。
+     * 请你返回一个长度为 n 的整数数组 pairs，其中 pairs[i] 是能跟第 i 个咒语成功组合的 药水 数目。
+     * 输入：spells = [5,1,3], potions = [1,2,3,4,5], success = 7
+     * 输出：[4,0,3]
+     * 解释：
+     * - 第 0 个咒语：5 * [1,2,3,4,5] = [5,10,15,20,25] 。总共 4 个成功组合。
+     * - 第 1 个咒语：1 * [1,2,3,4,5] = [1,2,3,4,5] 。总共 0 个成功组合。
+     * - 第 2 个咒语：3 * [1,2,3,4,5] = [3,6,9,12,15] 。总共 3 个成功组合。
+     * 所以返回 [4,0,3] 。
+     * @param spells
+     * @param potions
+     * @param success
+     * @return
+     */
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        int n = spells.length;
+        int m = potions.length;
+        int[] res = new int[n];
+        Arrays.sort(potions);
+        for (int i = 0; i < n; i++) {
+            int l = 0;
+            int r = m - 1;
+            while (l <= r) {
+                int mid = l + (r - l) / 2;
+                if ((long)spells[i] * potions[mid] >= success) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            res[i] = m - r - 1;
+        }
+        return res;
+    }
+
+    /**
+     * 峰值元素是指其值严格大于左右相邻值的元素。
+     * 给你一个整数数组 nums，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 任何一个峰值 所在位置即可。
+     * 你可以假设 nums[-1] = nums[n] = -∞ 。
+     * 你必须实现时间复杂度为 O(log n) 的算法来解决此问题。
+     * 输入：nums = [1,2,3,1]
+     * 输出：2
+     * 解释：3 是峰值元素，你的函数应该返回其索引 2。
+     * @param nums
+     * @return
+     */
+    public int findPeakElement(int[] nums) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * 珂珂喜欢吃香蕉。这里有 n 堆香蕉，第 i 堆中有 piles[i] 根香蕉。警卫已经离开了，将在 h 小时后回来。
+     * 珂珂可以决定她吃香蕉的速度 k （单位：根/小时）。每个小时，她将会选择一堆香蕉，从中吃掉 k 根。如果这堆香蕉少于 k 根，
+     * 她将吃掉这堆的所有香蕉，然后这一小时内不会再吃更多的香蕉。
+     * 珂珂喜欢慢慢吃，但仍然想在警卫回来前吃掉所有的香蕉。
+     * 返回她可以在 h 小时内吃掉所有香蕉的最小速度 k（k 为整数）。
+     * 输入：piles = [3,6,7,11], h = 8
+     * 输出：4
+     * @param piles
+     * @param h
+     * @return
+     */
+    public int minEatingSpeed(int[] piles, int h) {
+        int low = 1;
+        int high = 0;
+        for (int pile : piles) {
+            high = Math.max(high, pile);
+        }
+        int res = high;
+        while (low < high) {
+            int speed = low + (high - low) / 2;
+            int time = minEatingSpeed_help(piles, speed);
+            if (time <= h) {
+                res = speed;
+                high = speed;
+            } else {
+                low = speed + 1;
+            }
+        }
+        return res;
+    }
+
+    private int minEatingSpeed_help(int[] piles, int h) {
+        int res = 0;
+        for (int pile : piles) {
+            res += (pile + h - 1) / h ;
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        leetCode75.orangesRotting(new int[][]{{2, 1, 1}, {1, 1, 0}, {0, 1, 1}});
+        leetCode75.minEatingSpeed(new int[]{30,11,23,4,20}, 5);
     }
 
     private void swap(int[] nums, int i, int j){
