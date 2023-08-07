@@ -1680,9 +1680,85 @@ public class LeetCode75 {
         return res;
     }
 
+    /**
+     * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+     * 给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+     * 输入：digits = "23"
+     * 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+     * @param digits
+     * @return
+     */
+    List<String> letterCombinations_res = new ArrayList<>();
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) {
+            return new ArrayList<>();
+        }
+        Map<Character, String> map = new HashMap<>();
+        map.put('2', "abc");
+        map.put('3', "def");
+        map.put('4', "ghi");
+        map.put('5', "jkl");
+        map.put('6', "mno");
+        map.put('7', "pqrs");
+        map.put('8', "tuv");
+        map.put('9', "wxyz");
+        letterCombinations_help(digits, map, new StringBuilder(), 0);
+        return letterCombinations_res;
+    }
+
+    private void letterCombinations_help(String digits, Map<Character, String> map, StringBuilder stringBuilder, int index) {
+        if (stringBuilder.length() == digits.length()) {
+            letterCombinations_res.add(stringBuilder.toString());
+            return;
+        }
+        String str = map.get(digits.charAt(index));
+        for (int i = 0; i < str.length(); i++) {
+            stringBuilder.append(str.charAt(i));
+            letterCombinations_help(digits, map, stringBuilder, index + 1);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+    }
+
+    /**
+     * 找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：
+     * 只使用数字1到9
+     * 每个数字 最多使用一次
+     * 返回 所有可能的有效组合的列表 。该列表不能包含相同的组合两次，组合可以以任何顺序返回。
+     * 输入: k = 3, n = 7
+     * 输出: [[1,2,4]]
+     * 解释:
+     * 1 + 2 + 4 = 7
+     * 没有其他符合的组合了。
+     * @param k
+     * @param n
+     * @return
+     */
+    List<List<Integer>> combinationSum3_res = new ArrayList<>();
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        combinationSum3_help(k, n, 0, new LinkedList<>(), 1);
+        return combinationSum3_res;
+    }
+
+    private void combinationSum3_help(int k, int n, int sum, LinkedList<Integer> path, int index) {
+        if (path.size() == k && n == sum) {
+            combinationSum3_res.add(new ArrayList<>(path));
+            return;
+        }
+        if (path.size() >= k || sum >= n) {
+            return;
+        }
+        for (int i = index; i < 10; i++) {
+            sum += i;
+            path.add(i);
+            combinationSum3_help(k, n, sum, path, i + 1);
+            sum -= i;
+            path.removeLast();
+        }
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
-        leetCode75.minEatingSpeed(new int[]{30,11,23,4,20}, 5);
+        leetCode75.combinationSum3(3, 7);
     }
 
     private void swap(int[] nums, int i, int j){
