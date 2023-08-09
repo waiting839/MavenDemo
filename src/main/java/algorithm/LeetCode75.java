@@ -1756,6 +1756,57 @@ public class LeetCode75 {
         }
     }
 
+    /**
+     * 泰波那契序列 Tn 定义如下：
+     * T0 = 0, T1 = 1, T2 = 1, 且在 n >= 0 的条件下 Tn+3 = Tn + Tn+1 + Tn+2
+     * 给你整数 n，请返回第 n 个泰波那契数 Tn 的值。
+     * @param n
+     * @return
+     */
+    public int tribonacci(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n <= 2) {
+            return 1;
+        }
+        int a = 0;
+        int b = 0;
+        int c = 1;
+        int d = 1;
+        //滑动数组
+        for (int i = n; i >= 3; i--) {
+            a = b;
+            b = c;
+            c = d;
+            d = a + b + c;
+        }
+        return d;
+    }
+
+    /**
+     * 给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个或者两个台阶。
+     * 你可以选择从下标为 0 或下标为 1 的台阶开始爬楼梯。
+     * 请你计算并返回达到楼梯顶部的最低花费。
+     * 输入：cost = [10,15,20]
+     * 输出：15
+     * 解释：你将从下标为 1 的台阶开始。
+     * - 支付 15 ，向上爬两个台阶，到达楼梯顶部。
+     * 总花费为 15 。
+     * @param cost
+     * @return
+     */
+    public int minCostClimbingStairs(int[] cost) {
+        int n = cost.length;
+        int[] dp = new int[n + 1];
+        dp[0] = 0;
+        dp[1] = 0;
+        for (int i = 2; i <= n; i++) {
+            dp[i] = Math.min(dp[i - 2] + cost[i - 2], dp[i - 1] + cost[i - 1]);
+        }
+        return dp[n];
+    }
+
     public static void main(String[] args) {
         LeetCode75 leetCode75 = new LeetCode75();
         leetCode75.combinationSum3(3, 7);
