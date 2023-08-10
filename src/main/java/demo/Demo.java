@@ -759,9 +759,12 @@ public class Demo {
 
 //        Student student = new Student();
 //        System.out.println(student.getAge() == 1);
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        Long l = 1690387200000L;
-        Date date=new Date(l);
-        System.out.println(simpleDateFormat.format(date));
+//        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//        Long l = 1690387200000L;
+//        Date date=new Date(l);
+//        System.out.println(simpleDateFormat.format(date));
+
+        String s = "中文";
+        System.out.println(s.length());
     }
 }
