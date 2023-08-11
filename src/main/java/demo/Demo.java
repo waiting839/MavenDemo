@@ -764,7 +764,13 @@ public class Demo {
 //        Date date=new Date(l);
 //        System.out.println(simpleDateFormat.format(date));
 
-        String s = "中文";
-        System.out.println(s.length());
+//        String s = "中文";
+//        System.out.println(s.length());
+
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("1", "1");
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("1", "1");
+        System.out.println(map1.equals(map2));
     }
 }
