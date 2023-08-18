@@ -82,8 +82,99 @@ public class LeetCode100 {
         return res;
     }
 
+    /**
+     * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     * 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+     * 输入: nums = [0,1,0,3,12]
+     * 输出: [1,3,12,0,0]
+     * @param nums
+     */
+    public void moveZeroes(int[] nums) {
+        int j = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                swap(nums, i, j);
+                j++;
+            }
+        }
+    }
+
+    /**
+     * 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i]) 。
+     * 找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水。
+     * 返回容器可以储存的最大水量。
+     * 说明：你不能倾斜容器。
+     * 输入：[1,8,6,2,5,4,8,3,7]
+     * 输出：49
+     * 解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,7]。在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+     * @param height
+     * @return
+     */
+    public int maxArea(int[] height) {
+        int res = 0;
+        int l = 0;
+        int r = height.length - 1;
+        while (l < r) {
+            res = Math.max(res, Math.min(height[l], height[r]) * (l - r));
+            if (height[l] > height[r]) {
+                r--;
+            }else {
+                l++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，
+     * 同时还满足 nums[i] + nums[j] + nums[k] == 0 。请
+     * 你返回所有和为 0 且不重复的三元组。
+     * 注意：答案中不可以包含重复的三元组。
+     * 输入：nums = [-1,0,1,2,-1,-4]
+     * 输出：[[-1,-1,2],[-1,0,1]]
+     * 解释：
+     * nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0 。
+     * nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0 。
+     * nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0 。
+     * 不同的三元组是 [-1,0,1] 和 [-1,-1,2] 。
+     * 注意，输出的顺序和三元组的顺序并不重要。
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) {
+                break;
+            }
+            if (i > 0 && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            int l = i + 1;
+            int r = nums.length - 1;
+            int target = -nums[i];
+            while (l < r) {
+                if (target - nums[r] == nums[l]) {
+                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                } else if (target - nums[r] > nums[l]) {
+                    l++;
+                } else {
+                    r--;
+                }
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
+    }
+
+    private void swap(int[] nums, int i, int j){
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
     }
 }
