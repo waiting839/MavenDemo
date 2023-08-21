@@ -1931,7 +1931,7 @@ public class Hot100 {
         //先将p长度的字母写进两个数组，然后比较
         for (int i = 0; i < pLen; i++) {
             sArr[s.charAt(i) - 'a']++;
-            pArr[s.charAt(i) - 'a']++;
+            pArr[p.charAt(i) - 'a']++;
         }
         if (Arrays.equals(sArr, pArr)) {
             res.add(0);
@@ -2227,6 +2227,6 @@ public class Hot100 {
 
     public static void main(String[] args) {
         Hot100 hot100 = new Hot100();
-        System.out.println(hot100.subarraySum(new int[]{2,0,0}, 2));
+        System.out.println(hot100.subarraySum(new int[]{1, 1, 1}, 2));
     }
 }

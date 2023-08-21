@@ -167,6 +167,89 @@ public class LeetCode100 {
         return res;
     }
 
+    /**
+     * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
+     * 输入: s = "abcabcbb"
+     * 输出: 3
+     * 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+     * @param s
+     * @return
+     */
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0;
+        //记录上一个字符的最大子串
+        int tmp = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int j = map.getOrDefault(s.charAt(i), -1);
+            tmp = i - j > tmp ? tmp + 1 : i - j;
+            res = Math.max(res, tmp);
+            map.put(s.charAt(i), i);
+        }
+        return res;
+    }
+
+    /**
+     * 给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序。
+     * 异位词 指由相同字母重排列形成的字符串（包括相同的字符串）。
+     * 输入: s = "cbaebabacd", p = "abc"
+     * 输出: [0,6]
+     * 解释:
+     * 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+     * 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+     * @param s
+     * @param p
+     * @return
+     */
+    public List<Integer> findAnagrams(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+        if (sLen < pLen) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        int[] sArr = new int[26];
+        int[] pArr = new int[26];
+        for (int i = 0; i < pLen; i++) {
+            sArr[s.charAt(i) - 'a']++;
+            pArr[p.charAt(i) - 'a']++;
+        }
+        if (Arrays.equals(sArr, pArr)) {
+            res.add(0);
+        }
+        for (int i = 0; i < sLen - pLen; i++) {
+            sArr[s.charAt(i) - 'a']--;
+            sArr[s.charAt(i + pLen) - 'a']++;
+            if (Arrays.equals(sArr, pArr)) {
+                res.add(i + 1);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的连续子数组的个数 。
+     * 输入：nums = [1,1,1], k = 2
+     * 输出：2
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        int pre = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for (int i = 0; i < nums.length; i++) {
+            pre += nums[i];
+            if (map.containsKey(pre - k)) {
+                count += map.get(pre - k);
+            }
+            map.put(pre, map.getOrDefault(pre, 0) + 1);
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
