@@ -250,6 +250,96 @@ public class LeetCode100 {
         return count;
     }
 
+    /**
+     * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
+     * 子数组 是数组中的一个连续部分
+     * 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+     * 输出：6
+     * 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int res = nums[0];
+        int tmp = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            tmp = Math.max(tmp + nums[i], nums[i]);
+            res = Math.max(res, tmp);
+        }
+        return res;
+    }
+
+    /**
+     * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。
+     * 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+     * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+     * 输出：[[1,6],[8,10],[15,18]]
+     * 解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        if (intervals == null || intervals.length < 1) {
+            return new int[0][0];
+        }
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> list = new ArrayList<>();
+        for (int i = 0; i < intervals.length; i++) {
+            int left = intervals[i][0];
+            if (!list.isEmpty() && list.get(list.size() - 1)[1] >= left) {
+                list.get(list.size() - 1)[1] = Math.max(intervals[i][1], list.get(list.size() - 1)[1]);
+            } else {
+                list.add(new int[]{intervals[i][0], intervals[i][1]});
+            }
+        }
+        return list.toArray(new int[list.size()][]);
+    }
+
+    /**
+     * 给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
+     * 输入: nums = [1,2,3,4,5,6,7], k = 3
+     * 输出: [5,6,7,1,2,3,4]
+     * 解释:
+     * 向右轮转 1 步: [7,1,2,3,4,5,6]
+     * 向右轮转 2 步: [6,7,1,2,3,4,5]
+     * 向右轮转 3 步: [5,6,7,1,2,3,4]
+     * @param nums
+     * @param k
+     */
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+        int[] newArr = new int[n];
+        for (int i = 0; i < n; ++i) {
+            newArr[(i + k) % n] = nums[i];
+        }
+        System.arraycopy(newArr, 0, nums, 0, n);
+    }
+
+    /**
+     * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积 。
+     * 题目数据 保证 数组 nums之中任意元素的全部前缀元素和后缀的乘积都在  32 位 整数范围内。
+     * 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+     * 输入: nums = [1,2,3,4]
+     * 输出: [24,12,8,6]
+     * @param nums
+     * @return
+     */
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        int p = 1;
+        for (int i = 0; i < n; i++) {
+            res[i] = p;
+            p *= nums[i];
+        }
+        p = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            res[i] *= p;
+            p *= nums[i];
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
