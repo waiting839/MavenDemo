@@ -665,6 +665,178 @@ public class LeetCode100 {
         return node.next;
     }
 
+    /**
+     * 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+     * @param root
+     * @return
+     */
+    List<Integer> inorderTraversal_res = new ArrayList<>();
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        inorderTraversal(root.left);
+        inorderTraversal_res.add(root.val);
+        inorderTraversal(root.right);
+        return inorderTraversal_res;
+    }
+
+    /**
+     * 二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+
+    /**
+     * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        root.left = right;
+        root.right = left;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return isSymmetric_help(root.left, root.right);
+    }
+
+    private boolean isSymmetric_help(TreeNode left, TreeNode right) {
+        if ((left == null && right == null)) {
+            return true;
+        }
+        if ((left == null || right == null) || left.val != right.val) {
+            return false;
+        }
+        return isSymmetric_help(left.left, right.right) && isSymmetric_help(left.right, right.left);
+    }
+
+    /**
+     * 给你一棵二叉树的根节点，返回该树的 直径 。
+     * 二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。
+     * 两节点之间路径的 长度 由它们之间边数表示。
+     * @param root
+     * @return
+     */
+    int diameterOfBinaryTree_res = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        diameterOfBinaryTree_help(root);
+        return diameterOfBinaryTree_res;
+    }
+
+    private int diameterOfBinaryTree_help(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = diameterOfBinaryTree_help(root.left);
+        int right = diameterOfBinaryTree_help(root.right);
+        diameterOfBinaryTree_res = Math.max(diameterOfBinaryTree_res, left + right);
+        return Math.max(left, right) + 1;
+    }
+
+    /**
+     * 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null){
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                list.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            res.add(list);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 高度平衡 二叉搜索树。
+     * 高度平衡 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树。
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBST_help(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode sortedArrayToBST_help(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        TreeNode node = new TreeNode();
+        int mid = left + (right - left) / 2;
+        node.val = nums[mid];
+        node.left = sortedArrayToBST_help(nums, left, mid - 1);
+        node.right = sortedArrayToBST_help(nums, mid + 1, right);
+        return node;
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+     * 有效 二叉搜索树定义如下：
+     * 节点的左子树只包含 小于 当前节点的数。
+     * 节点的右子树只包含 大于 当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     * @param root
+     * @return
+     */
+    List<Integer> isValidBST_List = new ArrayList<>();
+    public boolean isValidBST(TreeNode root) {
+        isValidBST_help(root);
+        for (int i = 1; i < isValidBST_List.size(); i++) {
+            if (isValidBST_List.get(i) <= isValidBST_List.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void isValidBST_help(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        isValidBST_help(root.left);
+        isValidBST_List.add(root.val);
+        isValidBST_help(root.right);
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
