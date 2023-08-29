@@ -837,6 +837,134 @@ public class LeetCode100 {
         isValidBST_help(root.right);
     }
 
+    /**
+     * 给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）。
+     * @param root
+     * @param k
+     * @return
+     */
+    List<Integer> kthSmallest_List = new ArrayList<>();
+    public int kthSmallest(TreeNode root, int k) {
+        kthSmallest_help(root);
+        return kthSmallest_List.get(k - 1);
+    }
+
+    private void kthSmallest_help(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        kthSmallest_help(root.left);
+        kthSmallest_List.add(root.val);
+        kthSmallest_help(root.right);
+    }
+
+    /**
+     * 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        List<Integer> res = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            res.add(queue.peek().val);
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你二叉树的根结点 root ，请你将它展开为一个单链表：
+     * 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null 。
+     * 展开后的单链表应该与二叉树 先序遍历 顺序相同。
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        List<TreeNode> list = new ArrayList<>();
+        flatten_help(root, list);
+        for (int i = 1; i < list.size(); i++) {
+            TreeNode pre = list.get(i - 1);
+            TreeNode cur = list.get(i);
+            pre.left = null;
+            pre.right = cur;
+        }
+    }
+
+    private void flatten_help(TreeNode root, List<TreeNode> list) {
+        if (root == null) {
+            return;
+        }
+        list.add(root);
+        flatten_help(root.left, list);
+        flatten_help(root.right, list);
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目。
+     * 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+     * 输入：root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+     * 输出：3
+     * 解释：和等于 8 的路径有 3 条，如图所示。
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public int pathSum(TreeNode root, int targetSum) {
+        Map<Long, Integer> map = new HashMap<>();
+        map.put(0L, 1);
+        return pathSum_help(root,targetSum, map, 0L);
+    }
+
+    private int pathSum_help(TreeNode root, int targetSum, Map<Long, Integer> map, long cur) {
+        if (root == null) {
+            return 0;
+        }
+        cur += root.val;
+        int res = map.getOrDefault(cur - targetSum, 0);
+        map.put(cur, map.getOrDefault(cur, 0) + 1);
+        res += pathSum_help(root.left, targetSum, map, cur);
+        res += pathSum_help(root.right, targetSum, map, cur);
+        map.put(cur, map.get(cur - 1));
+        return res;
+    }
+
+    /**
+     * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+     * 百度百科中最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，
+     * 最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
