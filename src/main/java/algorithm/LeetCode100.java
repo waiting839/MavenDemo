@@ -965,6 +965,148 @@ public class LeetCode100 {
         return root;
     }
 
+    /**
+     * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
+     * 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+     * 此外，你可以假设该网格的四条边均被水包围。
+     * 输入：grid = [
+     *   ["1","1","0","0","0"],
+     *   ["1","1","0","0","0"],
+     *   ["0","0","1","0","0"],
+     *   ["0","0","0","1","1"]
+     * ]
+     * 输出：3
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        int res = 0;
+        int m = grid.length;
+        int n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1') {
+                    res++;
+                    numIslands_help(grid, i , j);
+                }
+            }
+        }
+        return res;
+    }
+
+    private void numIslands_help(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] == '0') {
+            return;
+        }
+        grid[i][j] = '0';
+        numIslands_help(grid, i - 1, j);
+        numIslands_help(grid, i + 1, j);
+        numIslands_help(grid, i, j - 1);
+        numIslands_help(grid, i, j + 1);
+    }
+
+    /**
+     * 在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一：
+     * 值 0 代表空单元格；
+     * 值 1 代表新鲜橘子；
+     * 值 2 代表腐烂的橘子。
+     * 每分钟，腐烂的橘子 周围 4 个方向上相邻 的新鲜橘子都会腐烂。
+     * 返回 直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1 。
+     * @param grid
+     * @return
+     */
+    public int orangesRotting(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] move = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        int res = 0;
+        Queue<int[]> queue = new LinkedList<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j});
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int s = 0; s < size; s++) {
+                int[] arr = queue.poll();
+                for (int k = 0; k < 4; k++) {
+                    int i = arr[0] + move[k][0];
+                    int j = arr[1] + move[k][1];
+                    if (i >= 0 && i < m && j >= 0 && j < n && grid[i][j] == 1) {
+                        grid[i][j] = 2;
+                        queue.offer(new int[]{i, j});
+                    }
+                }
+            }
+            res++;
+        }
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    return -1;
+                }
+            }
+        }
+        return res - 1 < 0 ? 0 : res - 1;
+    }
+
+    /**
+     * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
+     * 输入：nums = [1,2,3]
+     * 输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> permute_res = new ArrayList<>();
+    public List<List<Integer>> permute(int[] nums) {
+        permute_help(nums, new LinkedList<>());
+        return permute_res;
+    }
+
+    private void permute_help(int[] nums, LinkedList<Integer> path) {
+        if (nums.length == path.size()) {
+            permute_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (path.contains(nums[i])) {
+                continue;
+            }
+            path.add(nums[i]);
+            permute_help(nums, path);
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+     * 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。
+     * 输入：nums = [1,2,3]
+     * 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+     * @param nums
+     * @return
+     */
+    List<List<Integer>> subsets_res = new ArrayList<>();
+    public List<List<Integer>> subsets(int[] nums) {
+        subsets_help(nums, new LinkedList<>(), 0);
+        return subsets_res;
+    }
+
+    private void subsets_help(int[] nums, LinkedList<Integer> path, int start) {
+        subsets_res.add(new ArrayList<>(path));
+        if (nums.length == start) {
+            return;
+        }
+        for (int i = start; i < nums.length; i++) {
+            path.add(nums[i]);
+            subsets_help(nums, path, start + 1);
+            path.removeLast();
+        }
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
