@@ -1107,9 +1107,71 @@ public class LeetCode100 {
         }
     }
 
+    /**
+     * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，
+     * 并以列表形式返回。你可以按 任意顺序 返回这些组合。
+     * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的。
+     * 对于给定的输入，保证和为 target 的不同组合数少于 150 个。
+     * 输入：candidates = [2,3,6,7], target = 7
+     * 输出：[[2,2,3],[7]]
+     * 解释：
+     * 2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次。
+     * 7 也是一个候选， 7 = 7 。
+     * 仅有这两种组合。
+     * @param candidates
+     * @param target
+     * @return
+     */
+    List<List<Integer>> combinationSum_res = new ArrayList<>();
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        combinationSum_help(candidates, target, 0, new LinkedList<>(), 0);
+        return combinationSum_res;
+    }
+
+    private void combinationSum_help(int[] candidates, int target, int sum, LinkedList<Integer> path, int start) {
+        if (target == sum) {
+            combinationSum_res.add(new ArrayList<>(path));
+        }
+        for (int i = start; i < candidates.length && sum + candidates[i] <= target; i++) {
+            sum += candidates[i];
+            path.add(candidates[i]);
+            combinationSum_help(candidates, target, sum, path, i);
+            sum -= candidates[i];
+            path.removeLast();
+        }
+    }
+
+    /**
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     * 输入：n = 3
+     * 输出：["((()))","(()())","(())()","()(())","()()()"]
+     * @param n
+     * @return
+     */
+    List<String> generateParenthesis_res = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        generateParenthesis_help(n, new StringBuilder(), 0, 0);
+        return generateParenthesis_res;
+    }
+
+    private void generateParenthesis_help(int n, StringBuilder stringBuilder, int left, int right) {
+        if (stringBuilder.length() == n * 2) {
+            generateParenthesis_res.add(stringBuilder.toString());
+            return;
+        }
+        if (left < n) {
+            generateParenthesis_help(n, stringBuilder.append("("), left + 1, right);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        if (right < left) {
+            generateParenthesis_help(n, stringBuilder.append(")"), left, right + 1);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
-        leetCode100.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"});
+        leetCode100.generateParenthesis(3);
     }
 
     private void swap(int[] nums, int i, int j){
