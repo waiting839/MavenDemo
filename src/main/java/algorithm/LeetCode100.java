@@ -1169,9 +1169,94 @@ public class LeetCode100 {
         }
     }
 
+    /**
+     * 给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。
+     * 单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。
+     * @param board
+     * @param word
+     * @return
+     */
+    public boolean exist(char[][] board, String word) {
+        int m = board.length;
+        int n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (exist_help(board, word, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean exist_help(char[][] board, String word, int i, int j, int index) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || word.charAt(index) != board[i][j]) {
+            return false;
+        }
+        if (index == word.length() - 1) {
+            return true;
+        }
+        board[i][j] = '.';
+        boolean res = exist_help(board, word, i - 1, j, index + 1)
+                || exist_help(board, word, i + 1, j, index + 1)
+                || exist_help(board, word, i, j - 1, index + 1)
+                || exist_help(board, word, i, j + 1, index + 1);
+        board[i][j] = word.charAt(index);
+        return res;
+    }
+
+    /**
+     * 给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+     * 回文串 是正着读和反着读都一样的字符串。
+     * 输入：s = "aab"
+     * 输出：[["a","a","b"],["aa","b"]]
+     * @param s
+     * @return
+     */
+    List<List<String>> partition_res = new ArrayList<>();
+    public List<List<String>> partition(String s) {
+        partition_help(s, new LinkedList<>(), 0, 0);
+        return partition_res;
+    }
+
+    private void partition_help(String s, LinkedList<String> path, int len, int start) {
+        if (len == s.length()) {
+            partition_res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            String str = s.substring(start, i + 1);
+            if (!isPalindromeStr(str)) {
+                continue;
+            }
+            len += i - start + 1;
+            path.add(str);
+            partition_help(s, path, len, i + 1);
+            len -= i - start + 1;
+            path.removeLast();
+        }
+    }
+
+    private boolean isPalindromeStr(String s) {
+        int n = s.length();
+        if (n < 2) {
+            return true;
+        }
+        int l = 0;
+        int r = n - 1;
+        while (l < r) {
+            if (s.charAt(l) != s.charAt(r)) {
+                return false;
+            }
+            l++;
+            r--;
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
-        leetCode100.generateParenthesis(3);
+        leetCode100.partition("aaab");
     }
 
     private void swap(int[] nums, int i, int j){
