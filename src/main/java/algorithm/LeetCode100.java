@@ -1418,6 +1418,73 @@ public class LeetCode100 {
         return -1;
     }
 
+    /**
+     * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+     * 有效字符串需满足：
+     * 左括号必须用相同类型的右括号闭合。
+     * 左括号必须以正确的顺序闭合。
+     * 每个右括号都有一个对应的相同类型的左括号。
+     * 输入：s = "()[]{}"
+     * 输出：true
+     * @param s
+     * @return
+     */
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+            } else {
+                if (stack.isEmpty()) {
+                    return false;
+                } else if ((stack.peek() == '(' && c == ')')
+                        || (stack.peek() == '[' && c == ']')
+                        || (stack.peek() == '{' && c == '}')){
+                    stack.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 给定一个经过编码的字符串，返回它解码后的字符串。
+     * 编码规则为: k[encoded_string]，表示其中方括号内部的 encoded_string 正好重复 k 次。注意 k 保证为正整数。
+     * 你可以认为输入字符串总是有效的；输入字符串中没有额外的空格，且输入的方括号总是符合格式要求的。
+     * 此外，你可以认为原始数据不包含数字，所有的数字只表示重复的次数 k ，例如不会出现像 3a 或 2[4] 的输入。
+     * 输入：s = "2[abc]3[cd]ef"
+     * 输出："abcabccdcdcdef"
+     * @param s
+     * @return
+     */
+    public String decodeString(String s) {
+        StringBuilder path = new StringBuilder();
+        Stack<String> stack = new Stack<>();
+        Stack<Integer> k = new Stack<>();
+        int m = 0;
+        for (char c : s.toCharArray()) {
+            if (c >= '0' && c <= '9') {
+                m = m * 10 + Integer.parseInt(c + "");
+            } else if (c == '[') {
+                k.push(m);
+                m = 0;
+                stack.push(path.toString());
+                path = new StringBuilder();
+            } else if (c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                for (int i = 0; i < k.pop(); i++) {
+                    tmp.append(path);
+                }
+                path = new StringBuilder(stack.pop() + tmp);
+            } else {
+                path.append(c);
+            }
+        }
+        return path.toString();
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         System.out.println(leetCode100.search(new int[]{4,5,6,7,8,1,2,3}, 8));
