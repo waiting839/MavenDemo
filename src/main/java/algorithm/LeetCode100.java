@@ -1485,9 +1485,177 @@ public class LeetCode100 {
         return path.toString();
     }
 
+    /**
+     * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
+     * 请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+     * 你必须设计并实现时间复杂度为 O(n) 的算法解决此问题。
+     * 输入: [3,2,1,5,6,4], k = 2
+     * 输出: 5
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        return findKthLargest_help(nums, k, 0, nums.length - 1);
+    }
+
+    private int findKthLargest_help(int[] nums, int k, int l, int r) {
+        int i = l;
+        int j = r;
+        while (i < j) {
+            while (i < j && nums[j] >= nums[l]) {
+                j--;
+            }
+            while (i < j && nums[i] <= nums[l]) {
+                i++;
+            }
+            swap(nums, i, j);
+        }
+        swap(nums, l, i);
+        if (k > nums.length - i) {
+            return findKthLargest_help(nums, k, l, i - 1);
+        } else if (k < nums.length - i) {
+            return findKthLargest_help(nums, k, i + 1, r);
+        }
+        return nums[nums.length - k];
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。
+     * 输入: nums = [1,1,1,2,2,3], k = 2
+     * 输出: [1,2]
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o[1]));
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (priorityQueue.size() < k) {
+                priorityQueue.offer(new int[]{entry.getKey(), entry.getValue()});
+            } else {
+                if (priorityQueue.peek()[1] < entry.getValue()) {
+                    priorityQueue.poll();
+                    priorityQueue.offer(new int[]{entry.getKey(), entry.getValue()});
+                }
+            }
+        }
+        int[] res = new int[k];
+        for (int i = 0; i < k; i++) {
+            res[i] = priorityQueue.poll()[0];
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+     * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+     * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。
+     * 输入：[7,1,5,3,6,4]
+     * 输出：5
+     * 解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     *      注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        int profit = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            profit = Math.max(profit, prices[i] - min);
+            min = Math.min(min, prices[i]);
+        }
+        return profit;
+    }
+
+    /**
+     * 给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度。
+     * 判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false 。
+     * 输入：nums = [2,3,1,1,4]
+     * 输出：true
+     * 解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+     * @param nums
+     * @return
+     */
+    public boolean canJump(int[] nums) {
+        int maxL = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (maxL < i) {
+                continue;
+            }
+            maxL = Math.max(maxL, i + nums[i]);
+            if (maxL >= nums.length - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给定一个长度为 n 的 0 索引整数数组 nums。初始位置为 nums[0]。
+     * 每个元素 nums[i] 表示从索引 i 向前跳转的最大长度。换句话说，如果你在 nums[i] 处，你可以跳转到任意 nums[i + j] 处:
+     * 0 <= j <= nums[i]
+     * i + j < n
+     * 返回到达 nums[n - 1] 的最小跳跃次数。生成的测试用例可以到达 nums[n - 1]。
+     * 输入: nums = [2,3,1,1,4]
+     * 输出: 2
+     * 解释: 跳到最后一个位置的最小跳跃数是 2。
+     *      从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 1; j <= nums[i]; j++) {
+                if (i + j >= n) {
+                    return dp[i] + 1;
+                }
+                dp[i + j] = dp[i + j] == 0 ? dp[i] + 1 : dp[i + j];
+            }
+        }
+        return dp[n - 1];
+    }
+
+    /**
+     * 给你一个字符串 s 。我们要把这个字符串划分为尽可能多的片段，同一字母最多出现在一个片段中。
+     * 注意，划分结果需要满足：将所有划分结果按顺序连接，得到的字符串仍然是 s 。
+     * 返回一个表示每个字符串片段的长度的列表。
+     * 输入：s = "ababcbacadefegdehijhklij"
+     * 输出：[9,7,8]
+     * 解释：
+     * 划分结果为 "ababcbaca"、"defegde"、"hijhklij" 。
+     * 每个字母最多出现在一个片段中。
+     * 像 "ababcbacadefegde", "hijhklij" 这样的划分是错误的，因为划分的片段数较少。
+     * @param s
+     * @return
+     */
+    public List<Integer> partitionLabels(String s) {
+        int[] last = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            last[s.charAt(i) - 'a'] = i;
+        }
+        int start = 0;
+        int end = 0;
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+            end = Math.max(end, last[s.charAt(i) - 'a']);
+            if (i == end) {
+                res.add(end - start + 1);
+                start = end + 1;
+            }
+        }
+        return res;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
-        System.out.println(leetCode100.search(new int[]{4,5,6,7,8,1,2,3}, 8));
+        System.out.println(leetCode100.findKthLargest(new int[]{3,2,1,5,6,4}, 3));
     }
 
     private void swap(int[] nums, int i, int j){
