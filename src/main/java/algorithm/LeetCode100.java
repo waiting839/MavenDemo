@@ -1653,6 +1653,142 @@ public class LeetCode100 {
         return res;
     }
 
+    /**
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * 输入：n = 2
+     * 输出：2
+     * 解释：有两种方法可以爬到楼顶。
+     * 1. 1 阶 + 1 阶
+     * 2. 2 阶
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n == 1) {
+            return 1;
+        }
+        if (n == 2) {
+            return 2;
+        }
+        int pre = 1;
+        int cur = 2;
+        while (n > 2) {
+            int tmp = cur;
+            cur = cur + pre;
+            pre = tmp;
+            n--;
+        }
+        return cur;
+    }
+
+    /**
+     * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+     * 在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+     * 输入: numRows = 5
+     * 输出: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            List<Integer> row = new ArrayList<>();
+            for (int j = 0; j <= i; j++) {
+                if (j == 0 || i == j) {
+                    row.add(1);
+                } else {
+                    row.add(res.get(i - 1).get(j - 1) + res.get(i - 1).get(j));
+                }
+            }
+            res.add(row);
+        }
+        return res;
+    }
+
+    /**
+     * 你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，
+     * 如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+     * 给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额
+     * 输入：[1,2,3,1]
+     * 输出：4
+     * 解释：偷窃 1 号房屋 (金额 = 1) ，然后偷窃 3 号房屋 (金额 = 3)。
+     *      偷窃到的最高金额 = 1 + 3 = 4 。
+     * @param nums
+     * @return
+     */
+    public int rob(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        dp[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            if (i < 2) {
+                dp[i] = Math.max(nums[i], dp[i - 1]);
+            } else {
+                dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+            }
+        }
+        return dp[n - 1];
+    }
+
+    /**
+     * 给你一个整数 n ，返回 和为 n 的完全平方数的最少数量 。
+     * 完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。
+     * 输入：n = 12
+     * 输出：3
+     * 解释：12 = 4 + 4 + 4
+     * @param n
+     * @return
+     */
+    public int numSquares(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            int min = Integer.MAX_VALUE;
+            for (int j = 1; j * j <= i; j++) {
+                min = Math.min(min, dp[i - j * j]);
+            }
+            dp[i] = min + 1;
+        }
+        return dp[n];
+    }
+
+    /**
+     * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+     * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+     * 你可以认为每种硬币的数量是无限的。
+     * 输入：coins = [1, 2, 5], amount = 11
+     * 输出：3
+     * 解释：11 = 5 + 5 + 1
+     * @param coins
+     * @param amount
+     * @return
+     */
+    public int coinChange(int[] coins, int amount) {
+        return coinChange_help(coins, amount, new int[amount]);
+    }
+
+    private int coinChange_help(int[] coins, int amount, int[] visit) {
+        if (amount == 0) {
+            return 0;
+        }
+        if (amount < 0) {
+            return -1;
+        }
+        if (visit[amount - 1] != 0) {
+            return visit[amount - 1];
+        }
+        int res = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int sub = coinChange_help(coins, amount - coin, visit);
+            if (sub == -1) {
+                continue;
+            }
+            res = Math.min(res, sub + 1);
+        }
+        visit[amount - 1] = res == Integer.MAX_VALUE ? -1 : res;
+        return visit[amount - 1];
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         System.out.println(leetCode100.findKthLargest(new int[]{3,2,1,5,6,4}, 3));
