@@ -1789,6 +1789,104 @@ public class LeetCode100 {
         return visit[amount - 1];
     }
 
+    /**
+     * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+     * 注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+     * 输入: s = "leetcode", wordDict = ["leet", "code"]
+     * 输出: true
+     * 解释: 返回 true 因为 "leetcode" 可以由 "leet" 和 "code" 拼接成。
+     * @param s
+     * @param wordDict
+     * @return
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[n];
+    }
+
+    /**
+     * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+     * 子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+     * 输入：nums = [10,9,2,5,3,7,101,18]
+     * 输出：4
+     * 解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+     * @param nums
+     * @return
+     */
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        int res = 0;
+        for (int i = 1; i < n; i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积。
+     * 测试用例的答案是一个 32-位 整数。
+     * 子数组 是数组的连续子序列。
+     * 输入: nums = [2,3,-2,4]
+     * 输出: 6
+     * 解释: 子数组 [2,3] 有最大乘积 6。
+     * @param nums
+     * @return
+     */
+    public int maxProduct(int[] nums) {
+        int n = nums.length;
+        int minF = nums[0];
+        int maxF = nums[0];
+        int res = Integer.MIN_VALUE;
+        for (int i = 1; i < n; i++) {
+            int mn = minF;
+            int mx = maxF;
+            minF = Math.min(nums[i], Math.min(mn * nums[i], mx * nums[i]));
+            maxF = Math.max(nums[i], Math.max(mn * nums[i], mx * nums[i]));
+            res = Math.max(res, maxF);
+        }
+        return res;
+    }
+
+    /**
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+     * 问总共有多少条不同的路径？
+     * @param m
+     * @param n
+     * @return
+     */
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 || j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+                }
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         System.out.println(leetCode100.findKthLargest(new int[]{3,2,1,5,6,4}, 3));
