@@ -1887,6 +1887,108 @@ public class LeetCode100 {
         return dp[m - 1][n - 1];
     }
 
+    /**
+     * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+     * 说明：每次只能向下或者向右移动一步。
+     * @param grid
+     * @return
+     */
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
+        dp[0][0] = grid[0][0];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+                if (i == 0) {
+                    dp[i][j] = dp[i][j - 1] + grid[i][j];
+                    continue;
+                }
+                if (j == 0) {
+                    dp[i][j] = dp[i - 1][j] + grid[i][j];
+                    continue;
+                }
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    /**
+     * 给你一个字符串 s，找到 s 中最长的回文子串。
+     * 如果字符串的反序与原始字符串相同，则该字符串称为回文字符串。
+     * 输入：s = "babad"
+     * 输出："bab"
+     * 解释："aba" 同样是符合题意的答案。
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+        char[] sArr = s.toCharArray();
+        int n = s.length();
+        boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = true;
+        }
+        int begin = 0;
+        int maxL = 1;
+        for (int l = 2; l <= n; l++) {
+            for (int i = 0; i < n; i++) {
+                int j = i + l - 1;
+                if (j >= n) {
+                    break;
+                }
+                if (sArr[i] != sArr[j]) {
+                    dp[i][j] = false;
+                } else {
+                    if (j - i < 3) {
+                        dp[i][j] = true;
+                    } else {
+                        dp[i][j] = dp[i + 1][j - 1];
+                    }
+                }
+                if (dp[i][j] && j - i + 1 > maxL) {
+                    begin = i;
+                    maxL = j - i + 1;
+                }
+            }
+        }
+        return s.substring(begin, begin + maxL);
+    }
+
+    /**
+     * 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+     * 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+     * 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+     * 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+     * 输入：text1 = "abcde", text2 = "ace"
+     * 输出：3
+     * 解释：最长公共子序列是 "ace" ，它的长度为 3 。
+     * @param text1
+     * @param text2
+     * @return
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+        int m = text1.length();
+        int n = text2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            char c1 = text1.charAt(i - 1);
+            for (int j = 1; j <= n; j++) {
+                char c2 = text2.charAt(j - 1);
+                if (c1 == c2) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         System.out.println(leetCode100.findKthLargest(new int[]{3,2,1,5,6,4}, 3));
