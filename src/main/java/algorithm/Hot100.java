@@ -340,7 +340,7 @@ public class Hot100 {
     public void nextPermutation(int[] nums) {
         int i = nums.length - 2;
         //从后面找出降序前的一个数字
-        while (i >= 0 && nums[i] >= nums[i - 1]) {
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
             i--;
         }
         if (i >= 0) {

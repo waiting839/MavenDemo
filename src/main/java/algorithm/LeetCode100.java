@@ -1989,6 +1989,109 @@ public class LeetCode100 {
         return dp[m][n];
     }
 
+    /**
+     * 给你一个 非空 整数数组 nums ，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+     * 你必须设计并实现线性时间复杂度的算法来解决此问题，且该算法只使用常量额外空间。
+     * 输入：nums = [2,2,1]
+     * 输出：1
+     * @param nums
+     * @return
+     */
+    public int singleNumber(int[] nums) {
+        int res = 0;
+        for (int num : nums) {
+            res = res ^ num;
+        }
+        return res;
+    }
+
+    /**
+     * 给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+     * 你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+     * 输入：nums = [3,2,3]
+     * 输出：3
+     * @param nums
+     * @return
+     */
+    public int majorityElement(int[] nums) {
+        int sum = 0;
+        int res = 0;
+        for (int num : nums) {
+            if (sum == 0) {
+                res = num;
+            }
+            sum += res == num ? 1 : -1;
+        }
+        return res;
+    }
+
+    /**
+     * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列。
+     * 例如，arr = [1,2,3] ，以下这些都可以视作 arr 的排列：[1,2,3]、[1,3,2]、[3,1,2]、[2,3,1] 。
+     * 整数数组的 下一个排列 是指其整数的下一个字典序更大的排列。更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，
+     * 那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。如果不存在下一个更大的排列，
+     * 那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）。
+     * 例如，arr = [1,2,3] 的下一个排列是 [1,3,2] 。
+     * 类似地，arr = [2,3,1] 的下一个排列是 [3,1,2] 。
+     * 而 arr = [3,2,1] 的下一个排列是 [1,2,3] ，因为 [3,2,1] 不存在一个字典序更大的排列。
+     * 给你一个整数数组 nums ，找出 nums 的下一个排列。
+     * 必须 原地 修改，只允许使用额外常数空间
+     * @param nums
+     */
+    public void nextPermutation(int[] nums) {
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (j >= 0 && nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        nextPermutation_help(nums, i + 1);
+    }
+
+    private void nextPermutation_help(int[] nums, int start) {
+        int i = start;
+        int j = nums.length - 1;
+        while (i < j) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
+            i++;
+            j--;
+        }
+    }
+
+    /**
+     * 给定一个包含 n + 1 个整数的数组 nums ，其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+     * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数 。
+     * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间。
+     * 输入：nums = [1,3,4,2,2]
+     * 输出：2
+     * @param nums
+     * @return
+     */
+    public int findDuplicate(int[] nums) {
+        int slow = nums[0];
+        int fast = nums[0];
+        while (true) {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+            if (slow == fast) {
+                break;
+            }
+        }
+        slow = nums[0];
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+
     public static void main(String[] args) {
         LeetCode100 leetCode100 = new LeetCode100();
         System.out.println(leetCode100.findKthLargest(new int[]{3,2,1,5,6,4}, 3));
