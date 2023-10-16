@@ -366,8 +366,101 @@ public class Hot100Again {
      * @param matrix
      */
     public void setZeroes(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        boolean[] rowArr = new boolean[m];
+        boolean[] colArr = new boolean[n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    rowArr[i] = true;
+                    colArr[j] = true;
+                }
+            }
+        }
+        for (int i = 0; i < m; i++) {
+            if (rowArr[i]) {
+                for (int j = 0; j < n; j++) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            if (colArr[j]) {
+                for (int i = 0; i < m; i++) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
 
+    /**
+     * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素。
+     * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
+     * 输出：[1,2,3,6,9,8,7,4,5]
+     * @param matrix
+     * @return
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int top = 0;
+        int down = matrix.length - 1;
+        int left = 0;
+        int right = matrix[0].length - 1;
+        List<Integer> res = new ArrayList<>();
+        while (true) {
+            for (int i = left; i <= right; i++) {
+                res.add(matrix[top][i]);
+            }
+            top++;
+            if (top > down) {
+                break;
+            }
+            for (int i = top; i <= down; i++) {
+                res.add(matrix[i][right]);
+            }
+            right--;
+            if (left > right) {
+                break;
+            }
+            for (int i = right; i >= left; i--) {
+                res.add(matrix[down][i]);
+            }
+            down--;
+            if (top > down) {
+                break;
+            }
+            for (int i = down; i >= top; i--) {
+                res.add(matrix[i][left]);
+            }
+            left++;
+            if (left > right) {
+                break;
+            }
+        }
+        return res;
+    }
 
+    /**
+     * 给定一个 n × n 的二维矩阵 matrix 表示一个图像。请你将图像顺时针旋转 90 度。
+     * 你必须在 原地 旋转图像，这意味着你需要直接修改输入的二维矩阵。请不要 使用另一个矩阵来旋转图像
+     * @param matrix
+     */
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[n - i - 1][j];
+                matrix[n - i - 1][j] = tmp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
     }
 
     public static void main(String[] args) {
