@@ -463,6 +463,511 @@ public class Hot100Again {
         }
     }
 
+    /**
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+     * 输入：intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+     * 输出：Intersected at '8'
+     * 解释：相交节点的值为 8 （注意，如果两个链表相交则不能为 0）。
+     * 从各自的表头开始算起，链表 A 为 [4,1,8,4,5]，链表 B 为 [5,6,1,8,4,5]。
+     * 在 A 中，相交节点前有 2 个节点；在 B 中，相交节点前有 3 个节点。
+     * — 请注意相交节点的值不为 1，因为在链表 A 和链表 B 之中值为 1 的节点 (A 中第二个节点和 B 中第三个节点) 是不同的节点。
+     * 换句话说，它们在内存中指向两个不同的位置，而链表 A 和链表 B 中值为 8 的节点 (A 中第三个节点，B 中第四个节点) 在内存中指向相同的位置。
+     * @param headA
+     * @param headB
+     * @return
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode A = headA;
+        ListNode B = headB;
+        while (A != B) {
+            A = A == null ? headB : A.next;
+            B = B == null ? headA : B.next;
+        }
+        return A;
+    }
+
+    /**
+     * 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+     * 输入：head = [1,2,3,4,5]
+     * 输出：[5,4,3,2,1]
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+
+    /**
+     * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+     * 输入：head = [1,2,2,1]
+     * 输出：true
+     * @param head
+     * @return
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null) {
+            return true;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null) {
+            if (fast.next != null) {
+                fast = fast.next.next;
+                slow = slow.next;
+            } else {
+                break;
+            }
+        }
+        ListNode cur = slow;
+        ListNode pre = null;
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        ListNode node = head;
+        while (node != null && pre != null) {
+            if (node.val != pre.val) {
+                return false;
+            }
+            node = node.next;
+            pre = pre.next;
+        }
+        return true;
+    }
+
+    /**
+     * 给你一个链表的头节点 head ，判断链表中是否有环。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。
+     * 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。
+     * 仅仅是为了标识链表的实际情况。
+     * 如果链表中存在环 ，则返回 true 。 否则，返回 false 。
+     * 输入：head = [3,2,0,-4], pos = 1
+     * 输出：true
+     * 解释：链表中有一个环，其尾部连接到第二个节点。
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (true) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                break;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。 为了表示给定链表中的环，
+     * 评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。如果 pos 是 -1，则在该链表中没有环。
+     * 注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况。
+     * 不允许修改 链表。
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode fast = head;
+        ListNode slow = head;
+        while (true) {
+            if (fast == null || fast.next == null) {
+                return null;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+            if (fast == slow) {
+                break;
+            }
+        }
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    /**
+     * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+     * 输入：l1 = [1,2,4], l2 = [1,3,4]
+     * 输出：[1,1,2,3,4,4]
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode head = new ListNode();
+        ListNode node = head;
+        while (list1 != null && list2 != null) {
+            if (list1.val > list2.val) {
+                node.next = new ListNode(list2.val);
+                list2 = list2.next;
+            } else {
+                node.next = new ListNode(list1.val);
+                list1 = list1.next;
+            }
+            node = node.next;
+        }
+        if (list1 != null) {
+            node.next = list1;
+        }
+        if (list2 != null) {
+            node.next = list2;
+        }
+        return head.next;
+    }
+
+    /**
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     * 输入：head = [1,2,3,4,5], n = 2
+     * 输出：[1,2,3,5]
+     * @param head
+     * @param n
+     * @return
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if(head == null){
+            return null;
+        }
+        int length = 0;
+        ListNode node = head;
+        while (node != null) {
+            node = node.next;
+            length++;
+        }
+        if (length == n) {
+            return head.next;
+        }
+        node = head;
+        for (int i = 0; i < length - n - 1; i++) {
+            node = node.next;
+        }
+        node.next = node.next.next;
+        return head;
+    }
+
+    /**
+     * 给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。
+     * 你必须在不修改节点内部的值的情况下完成本题（即，只能进行节点交换）。
+     * 输入：head = [1,2,3,4]
+     * 输出：[2,1,4,3]
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode node = new ListNode();
+        node.next = head;
+        ListNode pre = node;
+        ListNode cur = head;
+        while (cur != null && cur.next != null) {
+            ListNode next = cur.next.next;
+            cur.next.next = cur;
+            pre.next = cur.next;
+            cur.next = next;
+            pre = cur;
+            cur = cur.next;
+        }
+        return node.next;
+    }
+
+    /**
+     * 给定一个二叉树的根节点 root ，返回 它的 中序 遍历 。
+     * 输入：root = [1,null,2,3]
+     * 输出：[1,3,2]
+     * @param root
+     * @return
+     */
+    List<Integer> inorderTraversal_res = new ArrayList<>();
+    public List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        inorderTraversal(root.left);
+        inorderTraversal_res.add(root.val);
+        inorderTraversal(root.right);
+        return inorderTraversal_res;
+    }
+
+    /**
+     * 给定一个二叉树 root ，返回其最大深度。
+     * 二叉树的 最大深度 是指从根节点到最远叶子节点的最长路径上的节点数。
+     * @param root
+     * @return
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+    }
+
+    /**
+     * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点。
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        TreeNode left = root.left;
+        root.left = root.right;
+        root.right = left;
+        invertTree(root.left);
+        invertTree(root.right);
+        return root;
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root ， 检查它是否轴对称。
+     * 输入：root = [1,2,2,3,4,4,3]
+     * 输出：true
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return isSymmetric_help(root.left, root.right);
+    }
+
+    private boolean isSymmetric_help(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
+        }
+        if ((left == null || right == null) || left.val != right.val) {
+            return false;
+        }
+        return isSymmetric_help(left.right, right.left) && isSymmetric_help(left.left, right.right);
+    }
+
+    /**
+     * 给你一棵二叉树的根节点，返回该树的 直径 。
+     * 二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root 。
+     * 两节点之间路径的 长度 由它们之间边数表示。
+     * 输入：root = [1,2,3,4,5]
+     * 输出：3
+     * 解释：3 ，取路径 [4,2,1,3] 或 [5,2,1,3] 的长度。
+     * @param root
+     * @return
+     */
+    int diameterOfBinaryTree_res = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        diameterOfBinaryTree_help(root);
+        return diameterOfBinaryTree_res;
+    }
+
+    private int diameterOfBinaryTree_help(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = diameterOfBinaryTree_help(root.left);
+        int right = diameterOfBinaryTree_help(root.right);
+        diameterOfBinaryTree_res = Math.max(diameterOfBinaryTree_res, left + right);
+        return Math.max(left, right) + 1;
+    }
+
+    /**
+     * 给你二叉树的根节点 root ，返回其节点值的 层序遍历 。 （即逐层地，从左到右访问所有节点）。
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<List<Integer>> res = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.poll();
+                list.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            res.add(list);
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 高度平衡 二叉搜索树。
+     * 高度平衡 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树。
+     * @param nums
+     * @return
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBST_help(nums, 0, nums.length - 1);
+    }
+
+    private TreeNode sortedArrayToBST_help(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        int mid = left + (right - left) / 2;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = sortedArrayToBST_help(nums, left, mid - 1);
+        node.right = sortedArrayToBST_help(nums, mid + 1, right);
+        return node;
+    }
+
+    /**
+     * 给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树。
+     * 有效 二叉搜索树定义如下：
+     * 节点的左子树只包含 小于 当前节点的数。
+     * 节点的右子树只包含 大于 当前节点的数。
+     * 所有左子树和右子树自身必须也是二叉搜索树。
+     * 输入：root = [2,1,3]
+     * 输出：true
+     * @param root
+     * @return
+     */
+    List<Integer> isValidBST_res = new ArrayList<>();
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        isValidBST_help(root);
+        for (int i = 1; i < isValidBST_res.size(); i++) {
+            if (isValidBST_res.get(i) <= isValidBST_res.get(i - 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void isValidBST_help(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        isValidBST_help(root.left);
+        isValidBST_res.add(root.val);
+        isValidBST_help(root.right);
+    }
+
+    /**
+     * 给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）
+     * @param root
+     * @param k
+     * @return
+     */
+    List<Integer> kthSmallest_res = new ArrayList<>();
+    public int kthSmallest(TreeNode root, int k) {
+        kthSmallest_help(root);
+        return kthSmallest_res.get(k - 1);
+    }
+
+    private void kthSmallest_help(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        kthSmallest_help(root.left);
+        kthSmallest_res.add(root.val);
+        kthSmallest_help(root.right);
+    }
+
+    /**
+     * 给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值。
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        List<Integer> res = new ArrayList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int n = queue.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode node = queue.poll();
+                if (i == 0) {
+                    res.add(node.val);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
+     * 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
+     * 此外，你可以假设该网格的四条边均被水包围。
+     * @param grid
+     * @return
+     */
+    public int numIslands(char[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int res = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (numIslands_help(grid, i, j)) {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    private boolean numIslands_help(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] != '1') {
+            return false;
+        }
+        grid[i][j] = '0';
+        numIslands_help(grid, i + 1, j);
+        numIslands_help(grid, i - 1, j);
+        numIslands_help(grid, i, j + 1);
+        numIslands_help(grid, i, j - 1);
+        return true;
+    }
+
     public static void main(String[] args) {
         Hot100Again hot100Again = new Hot100Again();
         hot100Again.findAnagrams("cbaebabacd", "abc");
