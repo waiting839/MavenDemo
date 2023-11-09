@@ -1105,9 +1105,90 @@ public class Hot100Again {
         }
     }
 
+    /**
+     * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+     * 输入：n = 3
+     * 输出：["((()))","(()())","(())()","()(())","()()()"]
+     * @param n
+     * @return
+     */
+    List<String> generateParenthesis_res = new ArrayList<>();
+    public List<String> generateParenthesis(int n) {
+        generateParenthesis_help(n, 0, 0, new StringBuilder());
+        return generateParenthesis_res;
+    }
+
+    private void generateParenthesis_help(int n, int left, int right, StringBuilder stringBuilder) {
+        if (right == n) {
+            generateParenthesis_res.add(stringBuilder.toString());
+            return;
+        }
+        if (left < n) {
+            stringBuilder.append("(");
+            generateParenthesis_help(n, left + 1, right, stringBuilder);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+        if (right < left) {
+            stringBuilder.append(")");
+            generateParenthesis_help(n, left, right + 1, stringBuilder);
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        }
+    }
+
+    /**
+     * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+     * 请必须使用时间复杂度为 O(log n) 的算法。
+     * 输入: nums = [1,3,5,6], target = 5
+     * 输出: 2
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int searchInsert(int[] nums, int target) {
+        int l = 0;
+        int r = nums.length - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] > target) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * 给你一个满足下述两条属性的 m x n 整数矩阵：
+     * 每行中的整数从左到右按非严格递增顺序排列。
+     * 每行的第一个整数大于前一行的最后一个整数。
+     * 给你一个整数 target ，如果 target 在矩阵中，返回 true ；否则，返回 false 。
+     * 输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+     * 输出：true
+     * @param matrix
+     * @param target
+     * @return
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int i = 0;
+        int j = matrix[0].length;
+        while (i < matrix.length && j >= 0) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         Hot100Again hot100Again = new Hot100Again();
-        hot100Again.combinationSum(new int[]{2,3,6,7}, 7);
+        hot100Again.generateParenthesis(3);
     }
 
     private void swap(int[] nums, int i, int j){
