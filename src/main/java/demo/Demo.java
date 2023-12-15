@@ -772,6 +772,12 @@ public class Demo {
 //        Map<String, Object> map2 = new HashMap<>();
 //        map2.put("1", "1");
 //        System.out.println(map1.equals(map2));
-
+        List<Person> list = new ArrayList<>();
+        list.add(new Person("1", 1));
+        list.add(new Person("2", 1));
+        list.add(new Person("3", 3));
+        list.add(new Person("4", 4));
+        list = list.stream().filter(e -> e.getAge() == 2).collect(Collectors.toList());
+        list.size();
     }
 }
